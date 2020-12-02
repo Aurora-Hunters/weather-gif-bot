@@ -20,7 +20,9 @@ bot.onText(/^\/cme$/, (msg, match) => {
 
     const video = `https://iswa.gsfc.nasa.gov/IswaSystemWebApp/iSWACygnetStreamer?timestamp=2038-01-23+00%3A44%3A00&window=-1&cygnetId=261&t=${Date.now()}`;
     bot.sendChatAction(chatId, 'upload_video');
-    bot.sendVideo(chatId, video);
+    bot.sendVideo(chatId, video, {
+        reply_to_message_id: msg.message_id
+    });
 });
 
 bot.onText(/^\/cme_pics$/, (msg, match) => {
@@ -60,7 +62,9 @@ bot.onText(/^\/cme_pics$/, (msg, match) => {
             type: 'photo',
             media: `https://sohowww.nascom.nasa.gov/data/realtime/c3/512/latest.jpg?${Date.now()}`
         },
-    ]);
+    ], {
+        reply_to_message_id: msg.message_id
+    });
 });
 
 bot.onText(/^\/clouds_sat$/, async (msg, match) => {
@@ -75,7 +79,9 @@ bot.onText(/^\/clouds_sat$/, async (msg, match) => {
 
     clearInterval(intervalObject);
     bot.sendChatAction(chatId, 'upload_video');
-    bot.sendVideo(chatId, gifPath);
+    bot.sendVideo(chatId, gifPath, {
+        reply_to_message_id: msg.message_id
+    });
 });
 
 bot.onText(/^\/clouds_pre$/, async (msg, match) => {
@@ -90,5 +96,7 @@ bot.onText(/^\/clouds_pre$/, async (msg, match) => {
 
     clearInterval(intervalObject);
     bot.sendChatAction(chatId, 'upload_video');
-    bot.sendVideo(chatId, gifPath);
+    bot.sendVideo(chatId, gifPath, {
+        reply_to_message_id: msg.message_id
+    });
 });
