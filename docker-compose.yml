@@ -6,6 +6,4 @@ services:
     command: bash -c "yarn && yarn start"
     volumes:
       - '.:/usr/src/app'
-    devices:
-      - '/dev/snd'
     working_dir: /usr/src/app
