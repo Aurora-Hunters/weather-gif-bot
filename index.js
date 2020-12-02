@@ -67,9 +67,13 @@ bot.onText(/^\/clouds_sat$/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     bot.sendChatAction(chatId, 'upload_photo');
+    const intervalObject = setInterval(() => {
+        bot.sendChatAction(chatId, 'upload_photo');
+    }, 3000);
 
     const gifPath = await createSatelliteGif();
 
+    clearInterval(intervalObject);
     bot.sendChatAction(chatId, 'upload_video');
     bot.sendVideo(chatId, gifPath);
 });
@@ -78,9 +82,13 @@ bot.onText(/^\/clouds_pre$/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     bot.sendChatAction(chatId, 'upload_photo');
+    const intervalObject = setInterval(() => {
+        bot.sendChatAction(chatId, 'upload_photo');
+    }, 3000);
 
     const gifPath = await createCloudsGif();
 
+    clearInterval(intervalObject);
     bot.sendChatAction(chatId, 'upload_video');
     bot.sendVideo(chatId, gifPath);
 });
