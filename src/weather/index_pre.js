@@ -89,9 +89,10 @@ const getFrame = async function (date, offset) {
 
 
 const framesLimit = 15;
-const frames = [];
 
 module.exports = async () => {
+    const frames = [];
+
     let now = new Date();
     let lastPredictionDate = new Date();
 

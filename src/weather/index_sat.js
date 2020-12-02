@@ -80,11 +80,11 @@ const getFrame = async function (date) {
     return imagePath;
 }
 
-
 const framesLimit = 15;
-const frames = [];
 
 module.exports = async () => {
+    const frames = [];
+
     let now = new Date();
 
     now.setTime(now.getTime() - (3 * 60 * 60 * 1000));
