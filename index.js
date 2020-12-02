@@ -15,7 +15,7 @@ bot.on('message', (msg) => {
     console.log(msg)
 });
 
-bot.onText(/^\/cme$/, (msg, match) => {
+bot.onText(/\/cme_lollipop/, (msg, match) => {
     const chatId = msg.chat.id;
 
     const video = `https://iswa.gsfc.nasa.gov/IswaSystemWebApp/iSWACygnetStreamer?timestamp=2038-01-23+00%3A44%3A00&window=-1&cygnetId=261&t=${Date.now()}`;
@@ -25,7 +25,7 @@ bot.onText(/^\/cme$/, (msg, match) => {
     });
 });
 
-bot.onText(/^\/cme_pics$/, (msg, match) => {
+bot.onText(/\/cme_pics/, (msg, match) => {
     const chatId = msg.chat.id;
 
     bot.sendChatAction(chatId, 'upload_photo');
@@ -67,7 +67,7 @@ bot.onText(/^\/cme_pics$/, (msg, match) => {
     });
 });
 
-bot.onText(/^\/clouds_sat$/, async (msg, match) => {
+bot.onText(/\/clouds_sat/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     bot.sendChatAction(chatId, 'upload_photo');
@@ -84,7 +84,7 @@ bot.onText(/^\/clouds_sat$/, async (msg, match) => {
     });
 });
 
-bot.onText(/^\/clouds_pre$/, async (msg, match) => {
+bot.onText(/\/clouds_pre/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     bot.sendChatAction(chatId, 'upload_photo');
