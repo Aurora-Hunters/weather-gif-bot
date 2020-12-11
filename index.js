@@ -9,6 +9,8 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, {polling: true});
 const createSatelliteGif = require('./src/weather/index_sat');
 const createCloudsGif = require('./src/weather/index_pre');
 
+const PLACES = require('./src/weather/tools/places');
+
 bot.on('polling_error', function(error){ console.log(error); });
 
 bot.on('message', (msg) => {
@@ -63,32 +65,124 @@ bot.onText(/\/cme_pics/, (msg, match) => {
     ]);
 });
 
-bot.onText(/\/clouds_sat/, async (msg, match) => {
+bot.onText(/\/clouds_sat(.*)/, async (msg, match) => {
     const chatId = msg.chat.id;
 
-    bot.sendChatAction(chatId, 'upload_photo');
-    const intervalObject = setInterval(() => {
+    let place = match[1];
+
+    /**
+     * Remove bot's name
+     */
+    if (place.indexOf('@') !== -1) {
+        place = place.substring(0, place.indexOf('@'));
+    }
+
+    /**
+     * Remove _
+     * @type {string}
+     */
+    place = place.substring(place.indexOf("_") + 1);
+
+    if (place in PLACES) {
         bot.sendChatAction(chatId, 'upload_photo');
-    }, 3000);
+        const intervalObject = setInterval(() => {
+            bot.sendChatAction(chatId, 'upload_photo');
+        }, 3000);
 
-    const gifPath = await createSatelliteGif();
+        const gifPath = await createSatelliteGif(PLACES[place]);
 
-    clearInterval(intervalObject);
-    bot.sendChatAction(chatId, 'upload_video');
-    bot.sendVideo(chatId, gifPath);
+        clearInterval(intervalObject);
+        bot.sendChatAction(chatId, 'upload_video');
+        bot.sendVideo(chatId, gifPath);
+    } else {
+        const message =
+            `Satellite clouds maps for regions:\n` +
+            `\n` +
+            `/clouds_sat_LEN\n` +
+            `\n` +
+            `/clouds_sat_MSK\n` +
+            `\n` +
+            `/clouds_sat_KAR\n` +
+            `\n` +
+            `/clouds_sat_MUR\n`;
+
+        bot.sendChatAction(chatId, 'typing');
+        bot.sendMessage(chatId, message);
+    }
 });
 
-bot.onText(/\/clouds_pre/, async (msg, match) => {
+bot.onText(/\/clouds_pre(.*)/, async (msg, match) => {
     const chatId = msg.chat.id;
 
-    bot.sendChatAction(chatId, 'upload_photo');
-    const intervalObject = setInterval(() => {
+    let place = match[1];
+
+    /**
+     * Remove bot's name
+     */
+    if (place.indexOf('@') !== -1) {
+        place = place.substring(0, place.indexOf('@'));
+    }
+
+    /**
+     * Remove _
+     * @type {string}
+     */
+    place = place.substring(place.indexOf("_") + 1);
+
+    if (place in PLACES) {
         bot.sendChatAction(chatId, 'upload_photo');
-    }, 3000);
+        const intervalObject = setInterval(() => {
+            bot.sendChatAction(chatId, 'upload_photo');
+        }, 3000);
 
-    const gifPath = await createCloudsGif();
+        const gifPath = await createCloudsGif();
 
-    clearInterval(intervalObject);
-    bot.sendChatAction(chatId, 'upload_video');
-    bot.sendVideo(chatId, gifPath);
+        clearInterval(intervalObject);
+        bot.sendChatAction(chatId, 'upload_video');
+        bot.sendVideo(chatId, gifPath);
+    } else {
+        const message =
+            `Cloud coverage prediction for regions:\n` +
+            `\n` +
+            `/clouds_pre_LEN\n` +
+            `\n` +
+            `/clouds_pre_MSK\n` +
+            `\n` +
+            `/clouds_pre_KAR\n` +
+            `\n` +
+            `/clouds_pre_MUR\n`;
+
+        bot.sendChatAction(chatId, 'typing');
+        bot.sendMessage(chatId, message);
+    }
 });
+
+// bot.onText(/\/clouds_sat/, async (msg, match) => {
+//     const chatId = msg.chat.id;
+//
+//     bot.sendChatAction(chatId, 'upload_photo');
+//     const intervalObject = setInterval(() => {
+//         bot.sendChatAction(chatId, 'upload_photo');
+//     }, 3000);
+//
+//     const gifPath = await createSatelliteGif(place);
+//
+//     clearInterval(intervalObject);
+//     bot.sendChatAction(chatId, 'upload_video');
+//     bot.sendVideo(chatId, gifPath);
+// });
+//
+// bot.onText(/\/clouds_pre/, async (msg, match) => {
+//     const chatId = msg.chat.id;
+//
+//     bot.sendChatAction(chatId, 'upload_photo');
+//     const intervalObject = setInterval(() => {
+//         bot.sendChatAction(chatId, 'upload_photo');
+//     }, 3000);
+//
+//     const gifPath = await createCloudsGif();
+//
+//     clearInterval(intervalObject);
+//     bot.sendChatAction(chatId, 'upload_video');
+//     bot.sendVideo(chatId, gifPath);
+// });

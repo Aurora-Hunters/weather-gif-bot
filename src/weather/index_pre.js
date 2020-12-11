@@ -3,14 +3,9 @@ const create_video = require('./tools/create-video');
 const path = require('path');
 const fs = require('fs');
 const Jimp = require('jimp');
+const PLACE = require('./tools/places');
 
-const PLACE = {
-    LEN: 5063,
-    KAR: 5023,
-    MUR: 5069
-}
-
-const IS_FLASH = !false;
+const IS_FLASH = false;
 
 /**
  *
@@ -34,12 +29,11 @@ const composeForecastLabel = function (forecastDate, offset) {
  * @param {Date} date
  * @returns {Promise<*>}
  */
-const getFrame = async function (date, offset) {
+const getFrame = async function (date, offset, place) {
     const LABEL = composeForecastLabel(date, offset);
-    const place = PLACE.LEN;
 
     const imageUrl = `https://img4.meteologix.com/images/data/cache/model/model_moddeuhd${IS_FLASH ? '2' : ''}_${LABEL}_${place}_101.png`
-    const imagePath = path.join(__dirname, 'output', 'pre', `${LABEL}.png`);
+    const imagePath = path.join(__dirname, 'output', 'pre', `${place}_${LABEL}.png`);
 
     const dateTz = new Date();
 
@@ -90,7 +84,7 @@ const getFrame = async function (date, offset) {
 
 const framesLimit = 15;
 
-module.exports = async () => {
+module.exports = async (place = PLACE.LEN) => {
     const frames = [];
 
     let now = new Date();
@@ -115,7 +109,7 @@ module.exports = async () => {
 
     for (let i = 0; i < framesLimit; i++) {
         try {
-            const imagePath = await getFrame(lastPredictionDate, offset + i);
+            const imagePath = await getFrame(lastPredictionDate, offset + i, place);
 
             frames.push(imagePath);
         } catch (e) {
@@ -131,7 +125,12 @@ module.exports = async () => {
      * Create video file
      */
     try {
-        const gifPath = path.join(__dirname, 'output', 'pre.mp4');
+        const datestamp = `${now.getFullYear()}${now.getMonth()}${now.getDate()}-${now.getHours()}-${now.getMinutes()}`;
+        const gifPath = path.join(__dirname, 'output', `${place}_${datestamp}_pre.mp4`);
+
+        if (fs.existsSync(gifPath)) {
+            return gifPath;
+        }
 
         await create_video(frames, gifPath);
 

@@ -3,12 +3,7 @@ const create_video = require('./tools/create-video');
 const path = require('path');
 const fs = require('fs');
 const Jimp = require('jimp');
-
-const PLACE = {
-    LEN: 5063,
-    KAR: 5023,
-    MUR: 5069
-}
+const PLACE = require('./tools/places');
 
 /**
  *
@@ -31,12 +26,11 @@ const composeForecastLabel = function (forecastDate) {
  * @param {Date} date
  * @returns {Promise<*>}
  */
-const getFrame = async function (date) {
+const getFrame = async function (date, place) {
     const LABEL = composeForecastLabel(date);
-    const place = PLACE.LEN;
 
     const imageUrl = `https://img4.kachelmannwetter.com/images/data/cache/sat/sat_${LABEL}_${place}_543.jpg`
-    const imagePath = path.join(__dirname, 'output', 'sat', `${LABEL}.png`);
+    const imagePath = path.join(__dirname, 'output', 'sat', `${place}_${LABEL}.png`);
 
     const dateTz = new Date();
 
@@ -82,7 +76,7 @@ const getFrame = async function (date) {
 
 const framesLimit = 15;
 
-module.exports = async () => {
+module.exports = async (place = PLACE.LEN) => {
     const frames = [];
 
     let now = new Date();
@@ -99,7 +93,7 @@ module.exports = async () => {
         try {
             const date = new Date(now - (15 * 60 * 1000) * i);
 
-            const imagePath = await getFrame(date);
+            const imagePath = await getFrame(date, place);
 
             frames.push(imagePath);
         } catch (e) {
@@ -115,7 +109,12 @@ module.exports = async () => {
      * Create video file
      */
     try {
-        const gifPath = path.join(__dirname, 'output', 'sat.mp4');
+        const datestamp = `${now.getFullYear()}${now.getMonth()}${now.getDate()}-${now.getHours()}-${now.getMinutes()}`;
+        const gifPath = path.join(__dirname, 'output', `${place}_${datestamp}_sat.mp4`);
+
+        if (fs.existsSync(gifPath)) {
+            return gifPath;
+        }
 
         await create_video(frames, gifPath);
 
