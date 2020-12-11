@@ -135,7 +135,7 @@ bot.onText(/\/clouds_pre(.*)/, async (msg, match) => {
             bot.sendChatAction(chatId, 'upload_photo');
         }, 3000);
 
-        const gifPath = await createCloudsGif();
+        const gifPath = await createCloudsGif(PLACES[place]);
 
         clearInterval(intervalObject);
         bot.sendChatAction(chatId, 'upload_video');
