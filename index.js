@@ -245,7 +245,7 @@ bot.onText(/(А|а)биско/, async (msg, match) => {
     if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
 });
 
-bot.onText(/(Т|т)ромс((е|ё)?)|((Ш|ш)ибот(н?))/, async (msg, match) => {
+bot.onText(/((Т|т)ромс((е|ё)?))|((Ш|ш)ибот(н?))/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     let photo = `https://aurorainfo.eu/aurora-live-cameras/skibotn-norway-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
