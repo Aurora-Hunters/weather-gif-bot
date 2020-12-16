@@ -182,7 +182,7 @@ bot.onText(/(П|п)ор(д?)жус/, (msg, match) => {
     bot.sendMediaGroup(chatId, [
         {
             type: 'photo',
-            media: `https://aurorainfo.eu/aurora-live-cameras/kiruna-sweden-all-sky-aurora-live-camera.jpg?t=${Date.now()}`
+            media: `https://aurorainfo.eu/aurora-live-cameras/porjus-sweden-north-view-sweden-aurora-live-camera.jpg?t=${Date.now()}`
         },
         {
             type: 'photo',
