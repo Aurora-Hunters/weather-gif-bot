@@ -275,7 +275,7 @@ bot.onText(/(Т|т)ромс((е|ё)?)/, async (msg, match) => {
     if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
 });
 
-bot.onText(/((Т|т)езис)|((Л|л)ебедев)/, async (msg, match) => {
+bot.onText(/((Т|т)е(з|с)ис)|((Л|л)ебедев)/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     let photo = `https://tesis.lebedev.ru/upload_test/files/fc.png?t=${Date.now()}`;
