@@ -157,7 +157,7 @@ bot.onText(/\/clouds_pre(.*)/, async (msg, match) => {
     }
 });
 
-bot.onText(/((Ш|ш)пиц)|((С|с)вал(ь?)бард)/, (msg, match) => {
+bot.onText(/((Ш|ш)пиц)|((С|с)вал(ь?)бард)|((Г|г)румант)/, (msg, match) => {
     const chatId = msg.chat.id;
 
     bot.sendChatAction(chatId, 'upload_photo');
