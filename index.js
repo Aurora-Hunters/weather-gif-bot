@@ -9,6 +9,11 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, {polling: true});
 const createSatelliteGif = require('./src/weather/index_sat');
 const createCloudsGif = require('./src/weather/index_pre');
 
+const fs = require('fs');
+const path = require('path');
+const downloadImage = require('./src/weather/tools/download-image');
+const randomString = require('./src/weather/tools/randomString');
+
 const PLACES = require('./src/weather/tools/places');
 
 bot.on('polling_error', function(error){ console.log(error); });
@@ -157,49 +162,85 @@ bot.onText(/\/clouds_pre(.*)/, async (msg, match) => {
     }
 });
 
-bot.onText(/((Ш|ш)пиц)|((С|с)вал(ь?)бард)|((Г|г)румант)/, (msg, match) => {
+const SEND_WITHOUT_DOWNLOAD = false;
+
+bot.onText(/((Ш|ш)пиц)|((С|с)вал(ь?)бард)|((Г|г)румант)/, async (msg, match) => {
     const chatId = msg.chat.id;
+    let photo = `https://aurorainfo.eu/aurora-live-cameras/svalbard-norway-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
+
+    if (!SEND_WITHOUT_DOWNLOAD) {
+        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
+    }
 
     bot.sendChatAction(chatId, 'upload_photo');
+    await bot.sendPhoto(chatId, photo);
 
-    const photo = `https://aurorainfo.eu/aurora-live-cameras/svalbard-norway-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
-    bot.sendPhoto(chatId, photo);
+    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
 });
 
-bot.onText(/(к|К)ирун(а|е)/, (msg, match) => {
+bot.onText(/(к|К)ирун(а|е)/, async (msg, match) => {
     const chatId = msg.chat.id;
+    let photo = `https://aurorainfo.eu/aurora-live-cameras/kiruna-sweden-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
+
+    if (!SEND_WITHOUT_DOWNLOAD) {
+        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
+    }
 
     bot.sendChatAction(chatId, 'upload_photo');
+    await bot.sendPhoto(chatId, photo);
 
-    const photo = `https://aurorainfo.eu/aurora-live-cameras/kiruna-sweden-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
-    bot.sendPhoto(chatId, photo);
+    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
 });
 
-bot.onText(/(П|п)ор(д?)жус/, (msg, match) => {
+bot.onText(/(П|п)ор(д?)жус/, async (msg, match) => {
     const chatId = msg.chat.id;
 
+    let photos = [
+        `https://aurorainfo.eu/aurora-live-cameras/porjus-sweden-north-view-sweden-aurora-live-camera.jpg?t=${Date.now()}`,
+        `https://aurorainfo.eu/aurora-live-cameras/porjus-sweden-west-view-aurora-live-camera.jpg?t=${Date.now()}`,
+        `https://aurorainfo.eu/aurora-live-cameras/porjus-sweden-east-view-sweden-aurora-live-camera.jpg?t=${Date.now()}`
+    ];
+
+    if (!SEND_WITHOUT_DOWNLOAD) {
+        photos[0] = await downloadImage(photos[0], path.join(__dirname, 'temp', `${randomString()}.jpg`));
+        photos[1] = await downloadImage(photos[1], path.join(__dirname, 'temp', `${randomString()}.jpg`));
+        photos[2] = await downloadImage(photos[2], path.join(__dirname, 'temp', `${randomString()}.jpg`));
+    }
+
     bot.sendChatAction(chatId, 'upload_photo');
-    bot.sendMediaGroup(chatId, [
+    await bot.sendMediaGroup(chatId, [
         {
             type: 'photo',
-            media: `https://aurorainfo.eu/aurora-live-cameras/porjus-sweden-north-view-sweden-aurora-live-camera.jpg?t=${Date.now()}`
+            media: photos[0]
         },
         {
             type: 'photo',
-            media: `https://aurorainfo.eu/aurora-live-cameras/porjus-sweden-west-view-aurora-live-camera.jpg?${Date.now()}`
+            media: photos[1]
         },
         {
             type: 'photo',
-            media: `https://aurorainfo.eu/aurora-live-cameras/porjus-sweden-east-view-sweden-aurora-live-camera.jpg?${Date.now()}`
+            media: photos[2]
         },
     ]);
+
+    if (!SEND_WITHOUT_DOWNLOAD) { try {
+        fs.unlinkSync(photos[0]);
+        fs.unlinkSync(photos[1]);
+        fs.unlinkSync(photos[2]);
+    } catch (e) {} }
 });
 
-bot.onText(/(А|а)биско/, (msg, match) => {
+bot.onText(/(А|а)биско/, async (msg, match) => {
     const chatId = msg.chat.id;
 
-    bot.sendChatAction(chatId, 'upload_photo');
+    let photo = `https://aurorainfo.eu/aurora-live-cameras/abisko-lights-over-lapland-sweden-aurora-live-camera.jpg?t=${Date.now()}`;
 
-    const photo = `https://aurorainfo.eu/aurora-live-cameras/abisko-lights-over-lapland-sweden-aurora-live-camera.jpg?t=${Date.now()}`;
-    bot.sendPhoto(chatId, photo);
+    if (!SEND_WITHOUT_DOWNLOAD) {
+        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
+    }
+
+    bot.sendChatAction(chatId, 'upload_photo');
+    await bot.sendPhoto(chatId, photo);
+
+    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
 });
