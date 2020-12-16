@@ -157,7 +157,7 @@ bot.onText(/\/clouds_pre(.*)/, async (msg, match) => {
     }
 });
 
-bot.onText(/(Ш|ш)пиц/, (msg, match) => {
+bot.onText(/((Ш|ш)пиц)|((С|с)вал(ь?)бард)/, (msg, match) => {
     const chatId = msg.chat.id;
 
     bot.sendChatAction(chatId, 'upload_photo');
@@ -172,5 +172,34 @@ bot.onText(/(к|К)ирун(а|е)/, (msg, match) => {
     bot.sendChatAction(chatId, 'upload_photo');
 
     const photo = `https://aurorainfo.eu/aurora-live-cameras/kiruna-sweden-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
+    bot.sendPhoto(chatId, photo);
+});
+
+bot.onText(/(П|п)ор(д?)жус/, (msg, match) => {
+    const chatId = msg.chat.id;
+
+    bot.sendChatAction(chatId, 'upload_photo');
+    bot.sendMediaGroup(chatId, [
+        {
+            type: 'photo',
+            media: `https://aurorainfo.eu/aurora-live-cameras/kiruna-sweden-all-sky-aurora-live-camera.jpg?t=${Date.now()}`
+        },
+        {
+            type: 'photo',
+            media: `https://aurorainfo.eu/aurora-live-cameras/porjus-sweden-west-view-aurora-live-camera.jpg?${Date.now()}`
+        },
+        {
+            type: 'photo',
+            media: `https://aurorainfo.eu/aurora-live-cameras/porjus-sweden-east-view-sweden-aurora-live-camera.jpg?${Date.now()}`
+        },
+    ]);
+});
+
+bot.onText(/(А|а)биско/, (msg, match) => {
+    const chatId = msg.chat.id;
+
+    bot.sendChatAction(chatId, 'upload_photo');
+
+    const photo = `https://aurorainfo.eu/aurora-live-cameras/abisko-lights-over-lapland-sweden-aurora-live-camera.jpg?t=${Date.now()}`;
     bot.sendPhoto(chatId, photo);
 });
