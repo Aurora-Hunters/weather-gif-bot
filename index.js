@@ -178,7 +178,7 @@ bot.onText(/((Ш|ш)пиц)|((С|с)вал(ь?)бард)|((Г|г)румант)/,
     if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
 });
 
-bot.onText(/(к|К)ирун(а|е)/, async (msg, match) => {
+bot.onText(/(К|к)ирун(а|е)/, async (msg, match) => {
     const chatId = msg.chat.id;
     let photo = `https://aurorainfo.eu/aurora-live-cameras/kiruna-sweden-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
 
