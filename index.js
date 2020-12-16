@@ -162,7 +162,7 @@ bot.onText(/\/clouds_pre(.*)/, async (msg, match) => {
     }
 });
 
-const SEND_WITHOUT_DOWNLOAD = false;
+const SEND_WITHOUT_DOWNLOAD = !false;
 
 bot.onText(/((Ш|ш)пиц)|((С|с)вал(ь?)бард)|((Г|г)румант)/, async (msg, match) => {
     const chatId = msg.chat.id;
