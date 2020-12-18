@@ -164,7 +164,7 @@ bot.onText(/\/clouds_pre(.*)/, async (msg, match) => {
 
 const SEND_WITHOUT_DOWNLOAD = !false;
 
-bot.onText(/((Ш|ш)пиц)|((С|с)вал(ь?)бард)|((Г|г)румант)/, async (msg, match) => {
+bot.onText(/((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман(т|д))/, async (msg, match) => {
     const chatId = msg.chat.id;
     let photo = `https://aurorainfo.eu/aurora-live-cameras/svalbard-norway-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
 
@@ -192,7 +192,7 @@ bot.onText(/(К|к)ирун(а|е)/, async (msg, match) => {
     if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
 });
 
-bot.onText(/(П|п)ор(д?)жус/, async (msg, match) => {
+bot.onText(/((П|п)ор((д?)жу|ью)с)|((Й|й)окмок(к?))/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     let photos = [
