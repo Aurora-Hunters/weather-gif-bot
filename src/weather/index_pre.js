@@ -72,8 +72,8 @@ const getFrame = async function (date, offset, place) {
             const MINUTE = `${dateTz.getMinutes() < 10 ? '0' : ''}${dateTz.getMinutes()}`;
 
             return newImage
-                .print(font, 655, 630, `${HOUR}:${MINUTE} MSK`)
-                .print(font, 650, 650, `${DAY} ${MONTH} ${YEAR}`);
+                .print(font, 655, 620, `${HOUR}:${MINUTE} MSK`)
+                .print(font, 650, 640, `${DAY} ${MONTH} ${YEAR}`);
         })
 
     await newImage.write(imagePath);
@@ -85,8 +85,7 @@ const getFrame = async function (date, offset, place) {
 const framesLimit = 15;
 
 module.exports = async (place = PLACE.LEN) => {
-    const frames = [];
-
+    const framesPromises = [];
     let now = new Date();
     let lastPredictionDate = new Date();
 
@@ -94,8 +93,6 @@ module.exports = async (place = PLACE.LEN) => {
     now.setSeconds(0);
     now.setMinutes(0);
     now.setMilliseconds(0);
-
-    // console.log(now);
 
     let nowHours = now.getHours();
 
@@ -108,18 +105,14 @@ module.exports = async (place = PLACE.LEN) => {
     const offset = (now - lastPredictionDate) / (60 * 60 * 1000)
 
     for (let i = 0; i < framesLimit; i++) {
-        try {
-            const imagePath = await getFrame(lastPredictionDate, offset + i, place);
-
-            frames.push(imagePath);
-        } catch (e) {
-            console.error('❌️ Cannot save image because of', e);
-        }
+        framesPromises.push(getFrame(lastPredictionDate, offset + i, place));
     }
 
-    console.log(frames);
+    const frames = await Promise.all(framesPromises);
 
-    // frames.reverse();
+    frames.forEach(frame => console.log);
+
+    console.log(frames);
 
     /**
      * Create video file

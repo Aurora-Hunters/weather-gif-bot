@@ -6,6 +6,7 @@ require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const bot = new TelegramBot(process.env.BOT_TOKEN, {polling: true});
 
+
 const createSatelliteGif = require('./src/weather/index_sat');
 const createCloudsGif = require('./src/weather/index_pre');
 
@@ -19,7 +20,25 @@ const PLACES = require('./src/weather/tools/places');
 bot.on('polling_error', function(error){ console.log(error); });
 
 bot.on('message', (msg) => {
-    console.log(msg)
+    console.log(msg);
+});
+
+const cron = require('node-cron');
+
+cron.schedule('*/15 * * * *', async () => {
+    Object.values(PLACES).forEach(async (place) => {
+        console.log(`Creating regular sat map for ${place}...`);
+
+        await createSatelliteGif(place);
+    })
+});
+
+cron.schedule('5 * * * *', async () => {
+    Object.values(PLACES).forEach(async (place) => {
+        console.log(`Creating regular clouds preduction map for ${place}...`);
+
+        await createCloudsGif(place);
+    })
 });
 
 bot.onText(/\/cme_lollipop/, (msg, match) => {

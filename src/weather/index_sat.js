@@ -65,8 +65,8 @@ const getFrame = async function (date, place) {
             const MINUTE = `${dateTz.getMinutes() < 10 ? '0' : ''}${dateTz.getMinutes()}`;
 
             return newImage
-                .print(font, 655, 630, `${HOUR}:${MINUTE} MSK`)
-                .print(font, 650, 650, `${DAY} ${MONTH} ${YEAR}`);
+                .print(font, 655, 620, `${HOUR}:${MINUTE} MSK`)
+                .print(font, 650, 640, `${DAY} ${MONTH} ${YEAR}`);
         })
 
     await newImage.write(imagePath);
@@ -77,8 +77,7 @@ const getFrame = async function (date, place) {
 const framesLimit = 15;
 
 module.exports = async (place = PLACE.LEN) => {
-    const frames = [];
-
+    const framesPromises = [];
     let now = new Date();
 
     now.setTime(now.getTime() - (3 * 60 * 60 * 1000));
@@ -90,16 +89,14 @@ module.exports = async (place = PLACE.LEN) => {
     now.setTime(now.getTime() - ((((nowMinutes + 15) % 15) + 30) * 60 * 1000));
 
     for (let i = 0; i < framesLimit; i++) {
-        try {
-            const date = new Date(now - (15 * 60 * 1000) * i);
+        const date = new Date(now - (15 * 60 * 1000) * i);
 
-            const imagePath = await getFrame(date, place);
-
-            frames.push(imagePath);
-        } catch (e) {
-            console.error('❌️ Cannot save image because of', e);
-        }
+        framesPromises.push(getFrame(date, place));
     }
+
+    const frames = await Promise.all(framesPromises);
+
+    frames.forEach(frame => console.log);
 
     console.log(frames);
 
