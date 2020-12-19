@@ -25,21 +25,38 @@ bot.on('message', (msg) => {
 
 const cron = require('node-cron');
 
-cron.schedule('*/15 * * * *', async () => {
-    Object.values(PLACES).forEach(async (place) => {
-        console.log(`Creating regular sat map for ${place}...`);
+cron.schedule('*/5 * * * *', async () => {
+// cron.schedule('*/5 * * * *', async () => {
+//     Object.values(PLACES).forEach(async (place) => {
+//         console.log(`Creating regular sat map for ${place}...`);
+//
+//         await createSatelliteGif(place);
+//     })
 
-        await createSatelliteGif(place);
-    })
+    await createSatelliteGif(PLACES.LEN);
+    await createSatelliteGif(PLACES.KAR);
+    await createSatelliteGif(PLACES.MUR);
+    await createSatelliteGif(PLACES.MSK);
+
+    await createCloudsGif(PLACES.LEN);
+    await createCloudsGif(PLACES.KAR);
+    await createCloudsGif(PLACES.MUR);
+    await createCloudsGif(PLACES.MSK);
 });
-
-cron.schedule('5 * * * *', async () => {
-    Object.values(PLACES).forEach(async (place) => {
-        console.log(`Creating regular clouds preduction map for ${place}...`);
-
-        await createCloudsGif(place);
-    })
-});
+//
+// cron.schedule('* * * * *', async () => {
+// // cron.schedule('5 * * * *', async () => {
+// //     Object.values(PLACES).forEach(async (place) => {
+// //         console.log(`Creating regular clouds preduction map for ${place}...`);
+// //
+// //         await createCloudsGif(place);
+// //     })
+//
+//     await createCloudsGif(PLACES.LEN);
+//     await createCloudsGif(PLACES.KAR);
+//     await createCloudsGif(PLACES.MUR);
+//     await createCloudsGif(PLACES.MSK);
+// });
 
 bot.onText(/\/cme_lollipop/, (msg, match) => {
     const chatId = msg.chat.id;
@@ -108,14 +125,18 @@ bot.onText(/\/clouds_sat(.*)/, async (msg, match) => {
     place = place.substring(place.indexOf("_") + 1);
 
     if (place in PLACES) {
-        bot.sendChatAction(chatId, 'upload_photo');
-        const intervalObject = setInterval(() => {
-            bot.sendChatAction(chatId, 'upload_photo');
-        }, 3000);
+        // bot.sendChatAction(chatId, 'upload_photo');
+        // const intervalObject = setInterval(() => {
+        //     bot.sendChatAction(chatId, 'upload_photo');
+        // }, 3000);
+        //
+        // const gifPath = await createSatelliteGif(PLACES[place]);
+        //
+        // clearInterval(intervalObject);
+        const gifPath = path.join(__dirname, 'src', 'weather', 'output', `sat_${PLACES[place]}_latest.mp4`);
 
-        const gifPath = await createSatelliteGif(PLACES[place]);
+        console.log(gifPath);
 
-        clearInterval(intervalObject);
         bot.sendChatAction(chatId, 'upload_video');
         bot.sendVideo(chatId, gifPath);
     } else {
@@ -154,14 +175,17 @@ bot.onText(/\/clouds_pre(.*)/, async (msg, match) => {
     place = place.substring(place.indexOf("_") + 1);
 
     if (place in PLACES) {
-        bot.sendChatAction(chatId, 'upload_photo');
-        const intervalObject = setInterval(() => {
-            bot.sendChatAction(chatId, 'upload_photo');
-        }, 3000);
+        // bot.sendChatAction(chatId, 'upload_photo');
+        // const intervalObject = setInterval(() => {
+        //     bot.sendChatAction(chatId, 'upload_photo');
+        // }, 3000);
+        //
+        // const gifPath = await createCloudsGif(PLACES[place]);
+        //
+        // clearInterval(intervalObject);
 
-        const gifPath = await createCloudsGif(PLACES[place]);
+        const gifPath = path.join(__dirname, 'src', 'weather', 'output', `pre_${PLACES[place]}_latest.mp4`);
 
-        clearInterval(intervalObject);
         bot.sendChatAction(chatId, 'upload_video');
         bot.sendVideo(chatId, gifPath);
     } else {

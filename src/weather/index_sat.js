@@ -106,12 +106,14 @@ module.exports = async (place = PLACE.LEN) => {
      * Create video file
      */
     try {
-        const datestamp = `${now.getFullYear()}${now.getMonth()}${now.getDate()}-${now.getHours()}-${now.getMinutes()}`;
-        const gifPath = path.join(__dirname, 'output', `${place}_${datestamp}_sat.mp4`);
+        // const datestamp = `${now.getFullYear()}${now.getMonth()}${now.getDate()}-${now.getHours()}-${now.getMinutes()}`;
 
-        if (fs.existsSync(gifPath)) {
-            return gifPath;
-        }
+        // const gifPath = path.join(__dirname, 'output', `${place}_${datestamp}_sat.mp4`);
+        const gifPath = path.join(__dirname, 'output', `sat_${place}_latest.mp4`);
+
+        // if (fs.existsSync(gifPath)) {
+        //     return gifPath;
+        // }
 
         await create_video(frames, gifPath);
 
