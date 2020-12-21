@@ -276,16 +276,32 @@ bot.onText(/((П|п)ор((д?)жу|ью)с)|((Й|й)окмок(к?))/, async (ms
 bot.onText(/(А|а)биско/, async (msg, match) => {
     const chatId = msg.chat.id;
 
-    let photo = `https://aurorainfo.eu/aurora-live-cameras/abisko-lights-over-lapland-sweden-aurora-live-camera.jpg?t=${Date.now()}`;
+    let photos = [
+        `https://aurorainfo.eu/aurora-live-cameras/abisko-lights-over-lapland-sweden-aurora-live-camera.jpg?t=${Date.now()}`,
+        `https://aurorainfo.eu/aurora-live-cameras/abisko-lights-over-lapland-sweden-aurora-live-camera-east.jpg?t=${Date.now()}`
+    ];
 
     if (!SEND_WITHOUT_DOWNLOAD) {
-        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
+        photos[0] = await downloadImage(photos[0], path.join(__dirname, 'temp', `${randomString()}.jpg`));
+        photos[1] = await downloadImage(photos[1], path.join(__dirname, 'temp', `${randomString()}.jpg`));
     }
 
     bot.sendChatAction(chatId, 'upload_photo');
-    await bot.sendPhoto(chatId, photo);
+    await bot.sendMediaGroup(chatId, [
+        {
+            type: 'photo',
+            media: photos[0]
+        },
+        {
+            type: 'photo',
+            media: photos[1]
+        }
+    ]);
 
-    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
+    if (!SEND_WITHOUT_DOWNLOAD) { try {
+        fs.unlinkSync(photos[0]);
+        fs.unlinkSync(photos[1]);
+    } catch (e) {} }
 });
 
 bot.onText(/((Ш|ш)|(Ск|ск))ибот(н?)/, async (msg, match) => {
