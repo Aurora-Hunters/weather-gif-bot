@@ -25,18 +25,18 @@ bot.on('message', (msg) => {
 
 const cron = require('node-cron');
 
-cron.schedule('*/5 * * * *', async () => {
+cron.schedule('*/15 * * * *', async () => {
     await createSatelliteGif(PLACES.LEN);
     await createSatelliteGif(PLACES.KAR);
     await createSatelliteGif(PLACES.MUR);
     await createSatelliteGif(PLACES.MSK);
-    await createSatelliteGif(PLACES.TVR);
+    // await createSatelliteGif(PLACES.TVR);
 
     await createCloudsGif(PLACES.LEN);
     await createCloudsGif(PLACES.KAR);
     await createCloudsGif(PLACES.MUR);
     await createCloudsGif(PLACES.MSK);
-    await createCloudsGif(PLACES.TVR);
+    // await createCloudsGif(PLACES.TVR);
 });
 
 // bot.onText(/\/start/, (msg, match) => {
@@ -117,7 +117,7 @@ bot.onText(/\/clouds_sat(.*)/, async (msg, match) => {
         const gifPath = path.join(__dirname, 'src', 'weather', 'output', `sat_${PLACES[place]}_latest.mp4`);
 
         if (!fs.existsSync(gifPath)) {
-            const message = `Gif is not ready. Try again in 5 minutes.`;
+            const message = `Gif is not ready. Try again in 15 minutes.`;
 
             bot.sendChatAction(chatId, 'typing');
             bot.sendMessage(chatId, message);
