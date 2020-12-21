@@ -26,36 +26,25 @@ bot.on('message', (msg) => {
 const cron = require('node-cron');
 
 cron.schedule('*/5 * * * *', async () => {
-// cron.schedule('*/5 * * * *', async () => {
-//     Object.values(PLACES).forEach(async (place) => {
-//         console.log(`Creating regular sat map for ${place}...`);
-//
-//         await createSatelliteGif(place);
-//     })
-
     await createSatelliteGif(PLACES.LEN);
     await createSatelliteGif(PLACES.KAR);
     await createSatelliteGif(PLACES.MUR);
     await createSatelliteGif(PLACES.MSK);
+    await createSatelliteGif(PLACES.TVR);
 
     await createCloudsGif(PLACES.LEN);
     await createCloudsGif(PLACES.KAR);
     await createCloudsGif(PLACES.MUR);
     await createCloudsGif(PLACES.MSK);
+    await createCloudsGif(PLACES.TVR);
 });
+
+// bot.onText(/\/start/, (msg, match) => {
+//     const chatId = msg.chat.id;
+//     const message = `Hi`;
 //
-// cron.schedule('* * * * *', async () => {
-// // cron.schedule('5 * * * *', async () => {
-// //     Object.values(PLACES).forEach(async (place) => {
-// //         console.log(`Creating regular clouds preduction map for ${place}...`);
-// //
-// //         await createCloudsGif(place);
-// //     })
-//
-//     await createCloudsGif(PLACES.LEN);
-//     await createCloudsGif(PLACES.KAR);
-//     await createCloudsGif(PLACES.MUR);
-//     await createCloudsGif(PLACES.MSK);
+//     bot.sendChatAction(chatId, 'typing');
+//     bot.sendMessage(chatId, message);
 // });
 
 bot.onText(/\/cme_lollipop/, (msg, match) => {
@@ -125,17 +114,15 @@ bot.onText(/\/clouds_sat(.*)/, async (msg, match) => {
     place = place.substring(place.indexOf("_") + 1);
 
     if (place in PLACES) {
-        // bot.sendChatAction(chatId, 'upload_photo');
-        // const intervalObject = setInterval(() => {
-        //     bot.sendChatAction(chatId, 'upload_photo');
-        // }, 3000);
-        //
-        // const gifPath = await createSatelliteGif(PLACES[place]);
-        //
-        // clearInterval(intervalObject);
         const gifPath = path.join(__dirname, 'src', 'weather', 'output', `sat_${PLACES[place]}_latest.mp4`);
 
-        console.log(gifPath);
+        if (!fs.existsSync(gifPath)) {
+            const message = `Gif is not ready. Try again in 5 minutes.`;
+
+            bot.sendChatAction(chatId, 'typing');
+            bot.sendMessage(chatId, message);
+            return;
+        }
 
         bot.sendChatAction(chatId, 'upload_video');
         bot.sendVideo(chatId, gifPath);
@@ -175,16 +162,15 @@ bot.onText(/\/clouds_pre(.*)/, async (msg, match) => {
     place = place.substring(place.indexOf("_") + 1);
 
     if (place in PLACES) {
-        // bot.sendChatAction(chatId, 'upload_photo');
-        // const intervalObject = setInterval(() => {
-        //     bot.sendChatAction(chatId, 'upload_photo');
-        // }, 3000);
-        //
-        // const gifPath = await createCloudsGif(PLACES[place]);
-        //
-        // clearInterval(intervalObject);
-
         const gifPath = path.join(__dirname, 'src', 'weather', 'output', `pre_${PLACES[place]}_latest.mp4`);
+
+        if (!fs.existsSync(gifPath)) {
+            const message = `Gif is not ready. Try again in 5 minutes.`;
+
+            bot.sendChatAction(chatId, 'typing');
+            bot.sendMessage(chatId, message);
+            return;
+        }
 
         bot.sendChatAction(chatId, 'upload_video');
         bot.sendVideo(chatId, gifPath);

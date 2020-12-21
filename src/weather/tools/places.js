@@ -1,8 +1,9 @@
 const PLACE = {
-    MSK: 5068,
-    LEN: 5063,
     KAR: 5023,
-    MUR: 5069
+    LEN: 5063,
+    MSK: 5068,
+    MUR: 5069,
+    TVR: 5097
 }
 
 module.exports = PLACE;
