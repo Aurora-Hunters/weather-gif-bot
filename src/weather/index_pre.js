@@ -85,7 +85,7 @@ const getFrame = async function (date, offset, place) {
 const framesLimit = 15;
 
 module.exports = async (place = PLACE.LEN) => {
-    const framesPromises = [];
+    let frames = [];
     let now = new Date();
     let lastPredictionDate = new Date();
 
@@ -104,13 +104,20 @@ module.exports = async (place = PLACE.LEN) => {
 
     const offset = (now - lastPredictionDate) / (60 * 60 * 1000)
 
-    for (let i = 0; i < framesLimit; i++) {
-        framesPromises.push(getFrame(lastPredictionDate, offset + i, place));
+    /** Use promises? */
+    if (!true) {
+        const framesPromises = [];
+
+        for (let i = 0; i < framesLimit; i++) {
+            framesPromises.push(getFrame(lastPredictionDate, offset + i, place));
+        }
+
+        frames = await Promise.all(framesPromises);
+    } else {
+        for (let i = 0; i < framesLimit; i++) {
+            frames.push(await getFrame(lastPredictionDate, offset + i, place));
+        }
     }
-
-    const frames = await Promise.all(framesPromises);
-
-    frames.forEach(frame => console.log);
 
     console.log(frames);
 
