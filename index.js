@@ -30,13 +30,13 @@ cron.schedule('*/15 * * * *', async () => {
     await createSatelliteGif(PLACES.KAR);
     await createSatelliteGif(PLACES.MUR);
     await createSatelliteGif(PLACES.MSK);
-    // await createSatelliteGif(PLACES.TVR);
+    await createSatelliteGif(PLACES.TVR);
 
     await createCloudsGif(PLACES.LEN);
     await createCloudsGif(PLACES.KAR);
     await createCloudsGif(PLACES.MUR);
     await createCloudsGif(PLACES.MSK);
-    // await createCloudsGif(PLACES.TVR);
+    await createCloudsGif(PLACES.TVR);
 });
 
 // bot.onText(/\/start/, (msg, match) => {
