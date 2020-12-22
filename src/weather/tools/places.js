@@ -1,5 +1,5 @@
 const PLACE = {
-    EUROPA: 5020,
+    EUROPE: 5020,
 
     ARKHANGELSK: 5021,
     KARELIA: 5023,
