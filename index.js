@@ -191,11 +191,13 @@ bot.onText(/\/clouds_sat(.*)/, async (msg, match) => {
             `\n` +
             `/clouds_sat_LENINGRAD\n` +
             `\n` +
-            `/clouds_sat_MOSCOW\n` +
-            `\n` +
             `/clouds_sat_KARELIA\n` +
             `\n` +
-            `/clouds_sat_MURMANSK\n`;
+            `/clouds_sat_MURMANSK\n` +
+            `\n` +
+            `/clouds_sat_TVER\n` +
+            `\n` +
+            `/clouds_sat_MOSCOW\n`;
 
         bot.sendChatAction(chatId, 'typing');
         bot.sendMessage(chatId, message);
@@ -237,13 +239,15 @@ bot.onText(/\/clouds_pre(.*)/, async (msg, match) => {
         const message =
             `Cloud coverage prediction for regions:\n` +
             `\n` +
-            `/clouds_pre_LENINGRAD\n` +
-            `\n` +
-            `/clouds_pre_MOSCOW\n` +
+            `/clouds_pre_LENINGRAD\n`+
             `\n` +
             `/clouds_pre_KARELIA\n` +
             `\n` +
-            `/clouds_pre_MURMANSK\n`;
+            `/clouds_pre_MURMANSK\n` +
+            `\n` +
+            `/clouds_pre_TVER\n` +
+            `\n` +
+            `/clouds_pre_MOSCOW\n` ;
 
         bot.sendChatAction(chatId, 'typing');
         bot.sendMessage(chatId, message);
