@@ -136,6 +136,8 @@ bot.onText(/\/clouds_sat(.*)/, async (msg, match) => {
             `\n` +
             `/clouds_sat_KAR\n` +
             `\n` +
+            `/clouds_sat_TVR\n` +
+            `\n` +
             `/clouds_sat_MUR\n`;
 
         bot.sendChatAction(chatId, 'typing');
@@ -165,7 +167,7 @@ bot.onText(/\/clouds_pre(.*)/, async (msg, match) => {
         const gifPath = path.join(__dirname, 'src', 'weather', 'output', `pre_${PLACES[place]}_latest.mp4`);
 
         if (!fs.existsSync(gifPath)) {
-            const message = `Gif is not ready. Try again in 5 minutes.`;
+            const message = `Gif is not ready. Try again in 15 minutes.`;
 
             bot.sendChatAction(chatId, 'typing');
             bot.sendMessage(chatId, message);
@@ -183,6 +185,8 @@ bot.onText(/\/clouds_pre(.*)/, async (msg, match) => {
             `/clouds_pre_MSK\n` +
             `\n` +
             `/clouds_pre_KAR\n` +
+            `\n` +
+            `/clouds_pre_TVR\n` +
             `\n` +
             `/clouds_pre_MUR\n`;
 
