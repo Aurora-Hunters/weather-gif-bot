@@ -113,6 +113,10 @@ module.exports = async (place = PLACE.LEN) => {
 
     frames.reverse();
 
+    for (let i = 0; i < 4; i++) {
+        frames.push(frames[frames.length - 1]);
+    }
+
     /**
      * Create video file
      */
