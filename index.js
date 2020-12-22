@@ -25,27 +25,86 @@ bot.on('message', (msg) => {
 
 const cron = require('node-cron');
 
-cron.schedule('*/15 * * * *', async () => {
-    await createSatelliteGif(PLACES.LEN);
-    await createSatelliteGif(PLACES.KAR);
-    await createSatelliteGif(PLACES.MUR);
-    await createSatelliteGif(PLACES.MSK);
-    await createSatelliteGif(PLACES.TVR);
+(async () => {
+    for (const [name, code] of Object.entries(PLACES)) {
+        await createSatelliteGif(code);
+        await createCloudsGif(code);
+    }
 
-    await createCloudsGif(PLACES.LEN);
-    await createCloudsGif(PLACES.KAR);
-    await createCloudsGif(PLACES.MUR);
-    await createCloudsGif(PLACES.MSK);
-    await createCloudsGif(PLACES.TVR);
+    cron.schedule('*/15 * * * *', async () => {
+        for (const [name, code] of Object.entries(PLACES)) {
+            await createSatelliteGif(code);
+            await createCloudsGif(code);
+        }
+    });
+})();
+
+
+
+bot.onText(/\/start/, (msg, match) => {
+    const chatId = msg.chat.id;
+    const message =
+        `Привет. Умею присылать гифки погодных условий со спутника и прогнозы облачности.\n` +
+        `\n` +
+        `Облака со спутника /clouds_sat\n` +
+        `Прогноз обласности /clouds_pre\n` +
+        `\n` +
+        `Вебкамеры /webcam`;
+
+    bot.sendChatAction(chatId, 'typing');
+    bot.sendMessage(chatId, message);
 });
 
-// bot.onText(/\/start/, (msg, match) => {
-//     const chatId = msg.chat.id;
-//     const message = `Hi`;
-//
-//     bot.sendChatAction(chatId, 'typing');
-//     bot.sendMessage(chatId, message);
-// });
+bot.onText(/\/webcam/, (msg, match) => {
+    const chatId = msg.chat.id;
+    const message =
+        `Напишите в сообщении название места с камерой или выберите команду.\n` +
+        `\n` +
+        `Норвегия:\n` +
+        `/svalbard — шпиц, свальбард, грумант\n` +
+        `/skibotn — шиботн\n` +
+        `/tromse — тромсе\n` +
+        `\n` +
+        `Швеция:\n` +
+        `/kiruna — кируна\n` +
+        `/abisko — абиско\n` +
+        `/porjus — порьюс, йокмокк\n`;
+
+    bot.sendChatAction(chatId, 'typing');
+    bot.sendMessage(chatId, message);
+});
+
+bot.onText(/\/commands/, (msg, match) => {
+    const chatId = msg.chat.id;
+    let message =
+        `/start\n` +
+        `/commands — this list\n` +
+        `\n` +
+        `/cme_lollipop — CME map prediction\n` +
+        `/cme_pics — SOHO images\n` +
+        `\n` +
+        `/webcam — list of available webcams\n` +
+        `/svalbard\n` +
+        `/skibotn\n` +
+        `/tromse\n` +
+        `/kiruna\n` +
+        `/abisko\n` +
+        `/porjus\n` +
+        `\n` +
+        `/clouds_sat — available regions for satellite maps\n` +
+        `/clouds_pre — available regions for clouds coverage prediction\n` +
+        `\n`;
+
+    for (const [name, code] of Object.entries(PLACES)) {
+        message +=
+            `/clouds_sat_${name}\n` +
+            `/clouds_pre_${name}\n` +
+            `\n`;
+    }
+
+    bot.sendChatAction(chatId, 'typing');
+    bot.sendMessage(chatId, message);
+});
 
 bot.onText(/\/cme_lollipop/, (msg, match) => {
     const chatId = msg.chat.id;
@@ -130,15 +189,13 @@ bot.onText(/\/clouds_sat(.*)/, async (msg, match) => {
         const message =
             `Satellite clouds maps for regions:\n` +
             `\n` +
-            `/clouds_sat_LEN\n` +
+            `/clouds_sat_LENINGRAD\n` +
             `\n` +
-            `/clouds_sat_MSK\n` +
+            `/clouds_sat_MOSCOW\n` +
             `\n` +
-            `/clouds_sat_KAR\n` +
+            `/clouds_sat_KARELIA\n` +
             `\n` +
-            `/clouds_sat_TVR\n` +
-            `\n` +
-            `/clouds_sat_MUR\n`;
+            `/clouds_sat_MURMANSK\n`;
 
         bot.sendChatAction(chatId, 'typing');
         bot.sendMessage(chatId, message);
@@ -180,15 +237,13 @@ bot.onText(/\/clouds_pre(.*)/, async (msg, match) => {
         const message =
             `Cloud coverage prediction for regions:\n` +
             `\n` +
-            `/clouds_pre_LEN\n` +
+            `/clouds_pre_LENINGRAD\n` +
             `\n` +
-            `/clouds_pre_MSK\n` +
+            `/clouds_pre_MOSCOW\n` +
             `\n` +
-            `/clouds_pre_KAR\n` +
+            `/clouds_pre_KARELIA\n` +
             `\n` +
-            `/clouds_pre_TVR\n` +
-            `\n` +
-            `/clouds_pre_MUR\n`;
+            `/clouds_pre_MURMANSK\n`;
 
         bot.sendChatAction(chatId, 'typing');
         bot.sendMessage(chatId, message);
@@ -197,7 +252,7 @@ bot.onText(/\/clouds_pre(.*)/, async (msg, match) => {
 
 const SEND_WITHOUT_DOWNLOAD = !false;
 
-bot.onText(/((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман(т|д))/, async (msg, match) => {
+bot.onText(/((S|s)valbard)|((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман(т|д))/, async (msg, match) => {
     const chatId = msg.chat.id;
     let photo = `https://aurorainfo.eu/aurora-live-cameras/svalbard-norway-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
 
@@ -211,7 +266,7 @@ bot.onText(/((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман
     if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
 });
 
-bot.onText(/(К|к)ирун(а|е)/, async (msg, match) => {
+bot.onText(/((K|k)iruna)|(К|к)ирун(а|е)/, async (msg, match) => {
     const chatId = msg.chat.id;
     let photo = `https://aurorainfo.eu/aurora-live-cameras/kiruna-sweden-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
 
@@ -225,7 +280,7 @@ bot.onText(/(К|к)ирун(а|е)/, async (msg, match) => {
     if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
 });
 
-bot.onText(/((П|п)ор((д?)жу|ью)с)|((Й|й)окмок(к?))/, async (msg, match) => {
+bot.onText(/((P|p)orjus)|((П|п)ор((д?)жу|ью)с)|((Й|й)окмок(к?))/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     let photos = [
@@ -263,7 +318,7 @@ bot.onText(/((П|п)ор((д?)жу|ью)с)|((Й|й)окмок(к?))/, async (ms
     } catch (e) {} }
 });
 
-bot.onText(/(А|а)биско/, async (msg, match) => {
+bot.onText(/((A|a)bisko)|(А|а)биско/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     let photos = [
@@ -294,7 +349,7 @@ bot.onText(/(А|а)биско/, async (msg, match) => {
     } catch (e) {} }
 });
 
-bot.onText(/((Ш|ш)|(Ск|ск))ибот(н?)/, async (msg, match) => {
+bot.onText(/((S|s)kibotn)|((Ш|ш)|(Ск|ск))ибот(н?)/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     let photo = `https://aurorainfo.eu/aurora-live-cameras/skibotn-norway-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
@@ -309,7 +364,7 @@ bot.onText(/((Ш|ш)|(Ск|ск))ибот(н?)/, async (msg, match) => {
     if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
 });
 
-bot.onText(/(Т|т)ромс((е|ё)?)/, async (msg, match) => {
+bot.onText(/((R|r)amfjord)|((T|t)romse)|(Т|т)ромс((е|ё)?)/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     let photo = `https://aurorainfo.eu/aurora-live-cameras/ramfjordmoen-norway-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;

@@ -1,9 +1,18 @@
 const PLACE = {
-    KAR: 5023,
-    LEN: 5063,
-    MSK: 5068,
-    MUR: 5069,
-    TVR: 5097
+    ARKHANGELSK: 5021,
+    KARELIA: 5023,
+    KOSTROMA: 5058,
+    LENINGRAD: 5063,
+    MOSCOW: 5068,
+    MURMANSK: 5069,
+    TVER: 5097,
+
+    FINNLAND: 946,
+    OSTFINNLAND: 4828,
+    LAPPLAND: 4829,
+    OULU: 4830,
+    SUDFINNLAND: 4831,
+    WESTFINNLAND: 4832
 }
 
 module.exports = PLACE;
