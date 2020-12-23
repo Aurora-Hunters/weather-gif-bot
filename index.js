@@ -189,6 +189,8 @@ bot.onText(/\/clouds_sat(.*)/, async (msg, match) => {
         const message =
             `Satellite clouds maps for regions:\n` +
             `\n` +
+            `/clouds_sat_EUROPE\n` +
+            `\n` +
             `/clouds_sat_LENINGRAD\n` +
             `\n` +
             `/clouds_sat_KARELIA\n` +
@@ -238,6 +240,8 @@ bot.onText(/\/clouds_pre(.*)/, async (msg, match) => {
     } else {
         const message =
             `Cloud coverage prediction for regions:\n` +
+            `\n` +
+            `/clouds_pre_EUROPE\n` +
             `\n` +
             `/clouds_pre_LENINGRAD\n`+
             `\n` +
