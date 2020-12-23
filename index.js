@@ -61,14 +61,14 @@ bot.onText(/\/webcam/, (msg, match) => {
         `Напишите в сообщении название места с камерой или выберите команду.\n` +
         `\n` +
         `Норвегия:\n` +
-        `/svalbard — шпицберген, свальбард, грумант\n` +
-        `/skibotn — шиботн\n` +
-        `/tromso — тромсе\n` +
+        `/svalbard — Шпицберген, Свальбард, Грумант\n` +
+        `/skibotn — Шиботн\n` +
+        `/tromso — Тромсе\n` +
         `\n` +
         `Швеция:\n` +
-        `/kiruna — кируна\n` +
-        `/abisko — абиску\n` +
-        `/porjus — порьюс, йокмокк\n`;
+        `/kiruna — Кируна\n` +
+        `/abisko — Абиску\n` +
+        `/porjus — Порьюс, Йокмокк\n`;
 
     bot.sendChatAction(chatId, 'typing');
     bot.sendMessage(chatId, message);
