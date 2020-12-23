@@ -61,13 +61,13 @@ bot.onText(/\/webcam/, (msg, match) => {
         `Напишите в сообщении название места с камерой или выберите команду.\n` +
         `\n` +
         `Норвегия:\n` +
-        `/svalbard — шпиц, свальбард, грумант\n` +
+        `/svalbard — шпицберген, свальбард, грумант\n` +
         `/skibotn — шиботн\n` +
-        `/tromse — тромсе\n` +
+        `/tromso — тромсе\n` +
         `\n` +
         `Швеция:\n` +
         `/kiruna — кируна\n` +
-        `/abisko — абиско\n` +
+        `/abisko — абиску\n` +
         `/porjus — порьюс, йокмокк\n`;
 
     bot.sendChatAction(chatId, 'typing');
@@ -326,7 +326,7 @@ bot.onText(/((P|p)orjus)|((П|п)ор((д?)жу|ью)с)|((Й|й)окмок(к?)
     } catch (e) {} }
 });
 
-bot.onText(/((A|a)bisko)|(А|а)биско/, async (msg, match) => {
+bot.onText(/((A|a)bisko)|(А|а)биск(о|у)/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     let photos = [
@@ -372,7 +372,7 @@ bot.onText(/((S|s)kibotn)|((Ш|ш)|(Ск|ск))ибот(н?)/, async (msg, match
     if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
 });
 
-bot.onText(/((R|r)amfjord)|((T|t)romse)|(Т|т)ромс((е|ё)?)/, async (msg, match) => {
+bot.onText(/((R|r)amfjord)|((T|t)roms(e|o))|(Т|т)ромс((е|ё)?)/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     let photo = `https://aurorainfo.eu/aurora-live-cameras/ramfjordmoen-norway-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
