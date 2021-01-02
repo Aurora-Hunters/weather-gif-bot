@@ -13,7 +13,7 @@ const PLACE = require('./tools/places');
  */
 const composeForecastLabel = function (forecastDate) {
     const YEAR = forecastDate.getFullYear();
-    const MONTH = forecastDate.getMonth() + 1;
+    const MONTH = `${(forecastDate.getDate() + 1) < 10 ? '0' : ''}${forecastDate.getMonth() + 1}`;
     const DAY = `${forecastDate.getDate() < 10 ? '0' : ''}${forecastDate.getDate()}`;
     const HOUR = `${forecastDate.getHours() < 10 ? '0' : ''}${forecastDate.getHours()}`;
     const MINUTE = `${forecastDate.getMinutes() < 10 ? '0' : ''}${forecastDate.getMinutes()}`;
