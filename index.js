@@ -16,6 +16,22 @@ const downloadImage = require('./src/weather/tools/download-image');
 const randomString = require('./src/weather/tools/randomString');
 
 const PLACES = require('./src/weather/tools/places');
+const SOLAR_HOLES = [
+    '0094',
+    '0131',
+    '0171',
+    '0193',
+    '0211',
+    '0304',
+    '0335',
+    '1600',
+    '1700'
+];
+const SOLAR_PLOTS = [
+    'HMIIF',
+    'HMIBC'
+];
+
 
 bot.on('polling_error', function(error){ console.log(error); });
 
@@ -60,15 +76,12 @@ bot.onText(/\/webcam/, (msg, match) => {
     const message =
         `Напишите в сообщении название места с камерой или выберите команду.\n` +
         `\n` +
-        `Норвегия:\n` +
-        `/svalbard — Шпицберген, Свальбард, Грумант\n` +
-        `/skibotn — Шиботн\n` +
-        `/tromso — Тромсе\n` +
-        `\n` +
-        `Швеция:\n` +
-        `/kiruna — Кируна\n` +
-        `/abisko — Абиску\n` +
-        `/porjus — Порьюс, Йокмокк\n`;
+        `78° — /svalbard — Шпицберген / Свальбард / Грумант\n` +
+        `69° — /skibotn — Шиботн\n` +
+        `69° — /tromso — Тромсе\n` +
+        `68° — /abisko — Абиску\n` +
+        `67° — /kiruna — Кируна\n` +
+        `66° — /porjus — Порьюс / Йокмокк\n`;
 
     bot.sendChatAction(chatId, 'typing');
     bot.sendMessage(chatId, message);
@@ -80,16 +93,9 @@ bot.onText(/\/commands/, (msg, match) => {
         `/start\n` +
         `/commands — this list\n` +
         `\n` +
-        `/cme_lollipop — CME map prediction\n` +
-        `/cme_pics — SOHO images\n` +
+        `/solar — sun images and gifs\n` +
         `\n` +
         `/webcam — list of available webcams\n` +
-        `/svalbard\n` +
-        `/skibotn\n` +
-        `/tromse\n` +
-        `/kiruna\n` +
-        `/abisko\n` +
-        `/porjus\n` +
         `\n` +
         `/clouds_sat — available regions for satellite maps\n` +
         `/clouds_pre — available regions for clouds coverage prediction\n` +
@@ -114,44 +120,92 @@ bot.onText(/\/cme_lollipop/, (msg, match) => {
     bot.sendVideo(chatId, video);
 });
 
-bot.onText(/\/cme_pics/, (msg, match) => {
+bot.onText(/^\/solar$/, (msg, match) => {
     const chatId = msg.chat.id;
+    let message =
+        `Напишите в сообщении название места с камерой или выберите команду.\n` +
+        `\n` +
+        `/solar_holes\n` +
+        `/solar_plots\n` +
+        `\n` +
+        `48h movies:\n`;
+
+    SOLAR_HOLES.forEach(element => {
+        message += `/solar_holes_${element}\n`;
+    })
+
+    SOLAR_PLOTS.forEach(element => {
+        message += `/solar_plots_${element}\n`;
+    })
+
+    bot.sendChatAction(chatId, 'typing');
+    bot.sendMessage(chatId, message);
+});
+
+bot.onText(/^\/solar_holes$/, (msg, match) => {
+    const chatId = msg.chat.id;
+    const size = 1024;
+
+    const mediaGroup = [];
+
+    SOLAR_HOLES.forEach(element => {
+        mediaGroup.push({
+            type: 'photo',
+            media: `https://sdo.gsfc.nasa.gov/assets/img/latest/latest_${size}_${element}.jpg?${Date.now()}`
+        })
+    })
 
     bot.sendChatAction(chatId, 'upload_photo');
-    bot.sendMediaGroup(chatId, [
-        {
+    bot.sendMediaGroup(chatId, mediaGroup);
+});
+
+bot.onText(/^\/solar_holes_(\d{4})$/, (msg, match) => {
+    const chatId = msg.chat.id;
+    const element = match[1];
+    const mediaGroup = [];
+
+    if (element in SOLAR_HOLES) return;
+
+    mediaGroup.push({
+        type: 'video',
+        media: `https://sdo.gsfc.nasa.gov/assets/img/latest/mpeg/latest_512_${element}.mp4?${Date.now()}`
+    })
+
+    bot.sendChatAction(chatId, 'upload_video');
+    bot.sendMediaGroup(chatId, mediaGroup);
+});
+
+bot.onText(/^\/solar_plots$/, (msg, match) => {
+    const chatId = msg.chat.id;
+    const size = 1024;
+
+    const mediaGroup = [];
+
+    SOLAR_PLOTS.forEach(element => {
+        mediaGroup.push({
             type: 'photo',
-            media: `https://sohowww.nascom.nasa.gov/data/realtime/eit_171/512/latest.jpg?${Date.now()}`
-        },
-        {
-            type: 'photo',
-            media: `https://sohowww.nascom.nasa.gov/data/realtime/eit_195/512/latest.jpg?${Date.now()}`
-        },
-        {
-            type: 'photo',
-            media: `https://sohowww.nascom.nasa.gov/data/realtime/eit_284/512/latest.jpg?${Date.now()}`
-        },
-        {
-            type: 'photo',
-            media: `https://sohowww.nascom.nasa.gov/data/realtime/eit_304/512/latest.jpg?${Date.now()}`
-        },
-        {
-            type: 'photo',
-            media: `https://sohowww.nascom.nasa.gov/data/realtime/hmi_igr/512/latest.jpg?${Date.now()}`
-        },
-        {
-            type: 'photo',
-            media: `https://sohowww.nascom.nasa.gov/data/realtime/hmi_mag/512/latest.jpg?${Date.now()}`
-        },
-        {
-            type: 'photo',
-            media: `https://sohowww.nascom.nasa.gov/data/realtime/c2/512/latest.jpg?${Date.now()}`
-        },
-        {
-            type: 'photo',
-            media: `https://sohowww.nascom.nasa.gov/data/realtime/c3/512/latest.jpg?${Date.now()}`
-        },
-    ]);
+            media: `https://sdo.gsfc.nasa.gov/assets/img/latest/latest_${size}_${element}.jpg?${Date.now()}`
+        })
+    });
+
+    bot.sendChatAction(chatId, 'upload_photo');
+    bot.sendMediaGroup(chatId, mediaGroup);
+});
+
+bot.onText(/^\/solar_plots_(\w{5})$/, (msg, match) => {
+    const chatId = msg.chat.id;
+    const element = match[1];
+    const mediaGroup = [];
+
+    if (element in SOLAR_PLOTS) return;
+
+    mediaGroup.push({
+        type: 'video',
+        media: `https://sdo.gsfc.nasa.gov/assets/img/latest/mpeg/latest_512_${element}.mp4?${Date.now()}`
+    })
+
+    bot.sendChatAction(chatId, 'upload_video');
+    bot.sendMediaGroup(chatId, mediaGroup);
 });
 
 bot.onText(/\/clouds_sat(.*)/, async (msg, match) => {
