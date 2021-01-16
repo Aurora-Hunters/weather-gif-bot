@@ -123,9 +123,9 @@ bot.onText(/\/cme_lollipop/, (msg, match) => {
 bot.onText(/^\/solar$/, (msg, match) => {
     const chatId = msg.chat.id;
     let message =
-        `Напишите в сообщении название места с камерой или выберите команду.\n` +
+        `/space_weather — X-Ray Flux, Proton Flux, Geomagnetic activity\n` +
         `\n` +
-        `/solar_map\n` +
+        `/solar_map — handwritten map\n` +
         `\n` +
         `/solar_holes\n` +
         `/solar_plots\n` +
@@ -142,6 +142,18 @@ bot.onText(/^\/solar$/, (msg, match) => {
 
     bot.sendChatAction(chatId, 'typing');
     bot.sendMessage(chatId, message);
+});
+
+bot.onText(/^\/space_weather$/, (msg, match) => {
+    const chatId = msg.chat.id;
+
+    const mediaGroup = [{
+        type: 'photo',
+        media: `https://services.swpc.noaa.gov/images/swx-overview-large.gif?${Date.now()}`
+    }];
+
+    bot.sendChatAction(chatId, 'upload_photo');
+    bot.sendMediaGroup(chatId, mediaGroup);
 });
 
 bot.onText(/((Р|р)укопись)|(^\/solar_map$)/, (msg, match) => {
