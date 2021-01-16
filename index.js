@@ -144,7 +144,7 @@ bot.onText(/^\/solar$/, (msg, match) => {
     bot.sendMessage(chatId, message);
 });
 
-bot.onText(/^\/solar_map$/, (msg, match) => {
+bot.onText(/((Р|р)укопись)|(^\/solar_map$)/, (msg, match) => {
     const chatId = msg.chat.id;
 
     const mediaGroup = [{
