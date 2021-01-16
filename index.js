@@ -125,6 +125,8 @@ bot.onText(/^\/solar$/, (msg, match) => {
     let message =
         `Напишите в сообщении название места с камерой или выберите команду.\n` +
         `\n` +
+        `/solar_map\n` +
+        `\n` +
         `/solar_holes\n` +
         `/solar_plots\n` +
         `\n` +
@@ -140,6 +142,18 @@ bot.onText(/^\/solar$/, (msg, match) => {
 
     bot.sendChatAction(chatId, 'typing');
     bot.sendMessage(chatId, message);
+});
+
+bot.onText(/^\/solar_map$/, (msg, match) => {
+    const chatId = msg.chat.id;
+
+    const mediaGroup = [{
+        type: 'photo',
+        media: `https://services.swpc.noaa.gov/images/synoptic-map.jpg?${Date.now()}`
+    }];
+
+    bot.sendChatAction(chatId, 'upload_photo');
+    bot.sendMediaGroup(chatId, mediaGroup);
 });
 
 bot.onText(/^\/solar_holes$/, (msg, match) => {
