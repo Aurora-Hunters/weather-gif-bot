@@ -71,7 +71,7 @@ bot.onText(/\/start/, (msg, match) => {
     bot.sendMessage(chatId, message);
 });
 
-bot.onText(/\/webcam/, (msg, match) => {
+bot.onText(/^\/webcam(@\w+)?$/, (msg, match) => {
     const chatId = msg.chat.id;
     const message =
         `Напишите в сообщении название места с камерой или выберите команду.\n` +
@@ -87,7 +87,7 @@ bot.onText(/\/webcam/, (msg, match) => {
     bot.sendMessage(chatId, message);
 });
 
-bot.onText(/\/commands/, (msg, match) => {
+bot.onText(/^\/commands(@\w+)?$/, (msg, match) => {
     const chatId = msg.chat.id;
     let message =
         `/start\n` +
@@ -112,7 +112,7 @@ bot.onText(/\/commands/, (msg, match) => {
     bot.sendMessage(chatId, message);
 });
 
-bot.onText(/\/cme_lollipop/, (msg, match) => {
+bot.onText(/^\/cme_lollipop(@\w+)?$/, (msg, match) => {
     const chatId = msg.chat.id;
 
     const video = `https://iswa.gsfc.nasa.gov/IswaSystemWebApp/iSWACygnetStreamer?timestamp=2038-01-23+00%3A44%3A00&window=-1&cygnetId=261&t=${Date.now()}`;
@@ -120,7 +120,7 @@ bot.onText(/\/cme_lollipop/, (msg, match) => {
     bot.sendVideo(chatId, video);
 });
 
-bot.onText(/^\/solar$/, (msg, match) => {
+bot.onText(/^\/solar(@\w+)?$/, (msg, match) => {
     const chatId = msg.chat.id;
     let message =
         `/space_weather — X-Ray Flux, Proton Flux, Geomagnetic activity\n` +
@@ -144,7 +144,7 @@ bot.onText(/^\/solar$/, (msg, match) => {
     bot.sendMessage(chatId, message);
 });
 
-bot.onText(/^\/space_weather$/, (msg, match) => {
+bot.onText(/^\/space_weather(@\w+)?$/, (msg, match) => {
     const chatId = msg.chat.id;
 
     const mediaGroup = [{
@@ -156,7 +156,7 @@ bot.onText(/^\/space_weather$/, (msg, match) => {
     bot.sendMediaGroup(chatId, mediaGroup);
 });
 
-bot.onText(/((Р|р)укопись)|(^\/solar_map$)/, (msg, match) => {
+bot.onText(/((Р|р)укопись)|(^\/solar_map(@\w+)?$)/, (msg, match) => {
     const chatId = msg.chat.id;
 
     const mediaGroup = [{
@@ -168,7 +168,7 @@ bot.onText(/((Р|р)укопись)|(^\/solar_map$)/, (msg, match) => {
     bot.sendMediaGroup(chatId, mediaGroup);
 });
 
-bot.onText(/^\/solar_holes$/, (msg, match) => {
+bot.onText(/^\/solar_holes(@\w+)?$/, (msg, match) => {
     const chatId = msg.chat.id;
     const size = 1024;
 
@@ -185,7 +185,7 @@ bot.onText(/^\/solar_holes$/, (msg, match) => {
     bot.sendMediaGroup(chatId, mediaGroup);
 });
 
-bot.onText(/^\/solar_holes_(\d{4})$/, (msg, match) => {
+bot.onText(/^\/solar_holes_(\d{4})(@\w+)?$/, (msg, match) => {
     const chatId = msg.chat.id;
     const element = match[1];
     const mediaGroup = [];
@@ -201,7 +201,7 @@ bot.onText(/^\/solar_holes_(\d{4})$/, (msg, match) => {
     bot.sendMediaGroup(chatId, mediaGroup);
 });
 
-bot.onText(/^\/solar_plots$/, (msg, match) => {
+bot.onText(/^\/solar_plots(@\w+)?$/, (msg, match) => {
     const chatId = msg.chat.id;
     const size = 1024;
 
@@ -218,7 +218,7 @@ bot.onText(/^\/solar_plots$/, (msg, match) => {
     bot.sendMediaGroup(chatId, mediaGroup);
 });
 
-bot.onText(/^\/solar_plots_(\w{5})$/, (msg, match) => {
+bot.onText(/^\/solar_plots_(\w{5})(@\w+)?$/, (msg, match) => {
     const chatId = msg.chat.id;
     const element = match[1];
     const mediaGroup = [];
@@ -234,7 +234,7 @@ bot.onText(/^\/solar_plots_(\w{5})$/, (msg, match) => {
     bot.sendMediaGroup(chatId, mediaGroup);
 });
 
-bot.onText(/\/clouds_sat(.*)/, async (msg, match) => {
+bot.onText(/^\/clouds_sat(.*)(@\w+)?$/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     let place = match[1];
@@ -286,7 +286,7 @@ bot.onText(/\/clouds_sat(.*)/, async (msg, match) => {
     }
 });
 
-bot.onText(/\/clouds_pre(.*)/, async (msg, match) => {
+bot.onText(/^\/clouds_pre(.*)(@\w+)?$/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     let place = match[1];
