@@ -77,11 +77,13 @@ bot.onText(/^\/webcam(@\w+)?$/, (msg, match) => {
         `Напишите в сообщении название места с камерой или выберите команду.\n` +
         `\n` +
         `78° — /svalbard — Шпицберген / Свальбард / Грумант\n` +
-        `69° — /skibotn — Шиботн\n` +
+        // `69° — /skibotn — Шиботн\n` +
         `69° — /tromso — Тромсе\n` +
         `68° — /abisko — Абиску\n` +
         `67° — /kiruna — Кируна\n` +
-        `66° — /porjus — Порьюс / Йокмокк\n`;
+        `67° — /sodankyla — Соданкюля\n` +
+        `66° — /porjus — Порьюс / Йокмокк\n` +
+        `62° — /hankasalmi — Ханкасалми`;
 
     bot.sendChatAction(chatId, 'typing');
     bot.sendMessage(chatId, message);
@@ -437,20 +439,20 @@ bot.onText(/((A|a)bisko)|(А|а)биск(о|у)/, async (msg, match) => {
     } catch (e) {} }
 });
 
-bot.onText(/((S|s)kibotn)|((Ш|ш)|(Ск|ск))ибот(н?)/, async (msg, match) => {
-    const chatId = msg.chat.id;
-
-    let photo = `https://aurorainfo.eu/aurora-live-cameras/skibotn-norway-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
-
-    if (!SEND_WITHOUT_DOWNLOAD) {
-        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
-    }
-
-    bot.sendChatAction(chatId, 'upload_photo');
-    await bot.sendPhoto(chatId, photo);
-
-    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
-});
+// bot.onText(/((S|s)kibotn)|((Ш|ш)|(Ск|ск))ибот(н?)/, async (msg, match) => {
+//     const chatId = msg.chat.id;
+//
+//     let photo = `https://aurorainfo.eu/aurora-live-cameras/skibotn-norway-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
+//
+//     if (!SEND_WITHOUT_DOWNLOAD) {
+//         photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
+//     }
+//
+//     bot.sendChatAction(chatId, 'upload_photo');
+//     await bot.sendPhoto(chatId, photo);
+//
+//     if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
+// });
 
 bot.onText(/((R|r)amfjord)|((T|t)roms(e|o))|(Т|т)ромс((е|ё)?)/, async (msg, match) => {
     const chatId = msg.chat.id;
@@ -471,6 +473,36 @@ bot.onText(/((Т|т)е(з|с)ис)|((Л|л)ебедев)/, async (msg, match) =>
     const chatId = msg.chat.id;
 
     let photo = `https://tesis.lebedev.ru/upload_test/files/fc.png?t=${Date.now()}`;
+
+    if (!SEND_WITHOUT_DOWNLOAD) {
+        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
+    }
+
+    bot.sendChatAction(chatId, 'upload_photo');
+    await bot.sendPhoto(chatId, photo);
+
+    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
+});
+
+bot.onText(/((S|s)odankyla)|(С|с)оданк(ю|у)ля/, async (msg, match) => {
+    const chatId = msg.chat.id;
+
+    let photo = `https://aurorainfo.eu/aurora-live-cameras/sodankyla-finland-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
+
+    if (!SEND_WITHOUT_DOWNLOAD) {
+        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
+    }
+
+    bot.sendChatAction(chatId, 'upload_photo');
+    await bot.sendPhoto(chatId, photo);
+
+    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
+});
+
+bot.onText(/((H|h)ankasalmi)|(Х|х)анкасалми/, async (msg, match) => {
+    const chatId = msg.chat.id;
+
+    let photo = `https://aurorainfo.eu/aurora-live-cameras/hankasalmi-finland-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
 
     if (!SEND_WITHOUT_DOWNLOAD) {
         photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
