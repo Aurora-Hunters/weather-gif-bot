@@ -484,7 +484,7 @@ bot.onText(/((Т|т)е(з|с)ис)|((Л|л)ебедев)/, async (msg, match) =>
     if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
 });
 
-bot.onText(/((S|s)odankyla)|(С|с)оданк(ю|у)ля/, async (msg, match) => {
+bot.onText(/((S|s)odankyla)|(С|с)оданк(ю|у)л/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     let photo = `https://aurorainfo.eu/aurora-live-cameras/sodankyla-finland-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
