@@ -14,6 +14,7 @@ const fs = require('fs');
 const path = require('path');
 const downloadImage = require('./src/weather/tools/download-image');
 const randomString = require('./src/weather/tools/randomString');
+const ffmpeg = require('./src/ffmpeg');
 
 const PLACES = require('./src/weather/tools/places');
 const SOLAR_HOLES = [
@@ -114,12 +115,31 @@ bot.onText(/^\/commands(@\w+)?$/, (msg, match) => {
     bot.sendMessage(chatId, message);
 });
 
-bot.onText(/^\/cme_lollipop(@\w+)?$/, (msg, match) => {
+bot.onText(/(^\/cme_lollipop(@\w+)?$)|((Л|л)еден(е?)ц)/, async (msg, match) => {
     const chatId = msg.chat.id;
 
-    const video = `https://iswa.gsfc.nasa.gov/IswaSystemWebApp/iSWACygnetStreamer?timestamp=2038-01-23+00%3A44%3A00&window=-1&cygnetId=261&t=${Date.now()}`;
+    let video = `https://iswa.gsfc.nasa.gov/IswaSystemWebApp/iSWACygnetStreamer?timestamp=2038-01-23+00%3A44%3A00&window=-1&cygnetId=261&t=${Date.now()}`;
+
     bot.sendChatAction(chatId, 'upload_video');
-    bot.sendVideo(chatId, video);
+
+    video = await downloadImage(video, path.join(__dirname, 'temp', `${randomString()}.gif`));
+
+    bot.sendChatAction(chatId, 'upload_video');
+
+    ffmpeg()
+        .input(video)
+        .outputOption([
+            '-y'
+        ])
+        .on('end', async function(stdout, stderr) {
+            console.log('Transcoding succeeded!');
+
+            video += '.mp4';
+            await bot.sendVideo(chatId, video);
+
+            try { fs.unlinkSync(video) } catch (e) {}
+        })
+        .save(`${video}.mp4`);
 });
 
 bot.onText(/^\/solar(@\w+)?$/, (msg, match) => {
