@@ -129,7 +129,8 @@ bot.onText(/(^\/cme_lollipop(@\w+)?$)|((Л|л)еден(е?)ц)/, async (msg, mat
     ffmpeg()
         .input(video)
         .outputOption([
-            '-y'
+            '-y',
+            '-pix_fmt yuv420p'
         ])
         .on('end', async function(stdout, stderr) {
             console.log('Transcoding succeeded!');
