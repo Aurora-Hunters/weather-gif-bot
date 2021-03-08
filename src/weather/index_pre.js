@@ -82,7 +82,7 @@ const getFrame = async function (date, offset, place) {
 }
 
 
-const framesLimit = 15;
+const framesLimit = 25;
 
 module.exports = async (place = PLACE.LEN) => {
     let frames = [];
