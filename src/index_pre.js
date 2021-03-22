@@ -1,9 +1,12 @@
 const download_image = require('./tools/download-image');
 const create_video = require('./tools/create-video');
+const get_directory = require('./tools/get-directory');
 const path = require('path');
 const fs = require('fs');
 const Jimp = require('jimp');
 const PLACE = require('./tools/places');
+
+const IS_FLASH = false;
 
 /**
  *
@@ -11,14 +14,15 @@ const PLACE = require('./tools/places');
  * @param {number} offset — number of hours after forecast time
  * @returns {string}
  */
-const composeForecastLabel = function (forecastDate) {
+const composeForecastLabel = function (forecastDate, offset) {
     const YEAR = forecastDate.getFullYear();
     const MONTH = `${(forecastDate.getMonth() + 1) < 10 ? '0' : ''}${forecastDate.getMonth() + 1}`;
     const DAY = `${forecastDate.getDate() < 10 ? '0' : ''}${forecastDate.getDate()}`;
     const HOUR = `${forecastDate.getHours() < 10 ? '0' : ''}${forecastDate.getHours()}`;
-    const MINUTE = `${forecastDate.getMinutes() < 10 ? '0' : ''}${forecastDate.getMinutes()}`;
 
-    return `${YEAR}_${MONTH}_${DAY}_${HOUR}_${MINUTE}`;
+    offset = `${offset < 10 ? '0' : ''}${offset}`;
+
+    return `${YEAR}${MONTH}${DAY}${HOUR}_${offset}`;
 }
 
 /**
@@ -26,15 +30,15 @@ const composeForecastLabel = function (forecastDate) {
  * @param {Date} date
  * @returns {Promise<*>}
  */
-const getFrame = async function (date, place) {
-    const LABEL = composeForecastLabel(date);
+const getFrame = async function (date, offset, place) {
+    const LABEL = composeForecastLabel(date, offset);
 
-    const imageUrl = `https://img4.kachelmannwetter.com/images/data/cache/sat/sat_${LABEL}_${place}_543.jpg`
-    const imagePath = path.join(__dirname, 'output', 'sat', `${place}_${LABEL}.png`);
+    const imageUrl = `https://img4.meteologix.com/images/data/cache/model/model_moddeuhd${IS_FLASH ? '2' : ''}_${LABEL}_${place}_101.png`
+    const imagePath = path.join(get_directory(__dirname, '..', 'temp', 'pre'), `${place}_${LABEL}.png`);
 
     const dateTz = new Date();
 
-    dateTz.setTime(date.getTime() + (3 * 60 * 60 * 1000));
+    dateTz.setTime(date.getTime() + ((3 + offset) * 60 * 60 * 1000));
 
     if (fs.existsSync(imagePath)) {
         console.log(`File exists. ${imagePath}`);
@@ -42,10 +46,11 @@ const getFrame = async function (date, place) {
     }
 
     console.log(`Downloading... ${imagePath}`);
+
     await download_image(imageUrl, imagePath);
 
     const mapImage = await Jimp.read(path.join(__dirname, 'assets', 'map', `${place}.png`));
-    const footerImage = await Jimp.read(path.join(__dirname, 'assets', 'footer', 'satellite.png'));
+    const footerImage = await Jimp.read(path.join(__dirname, 'assets', 'footer', 'clouds.png'));
     const satImage = await Jimp.read(imagePath);
     let newImage = new Jimp(760, 760);
 
@@ -71,64 +76,54 @@ const getFrame = async function (date, place) {
 
     await newImage.write(imagePath);
 
-    return imagePath;
+    return imagePath
 }
 
-const framesLimit = 15;
+
+const framesLimit = 25;
 
 module.exports = async (place = PLACE.LEN) => {
     let frames = [];
     let now = new Date();
+    let lastPredictionDate = new Date();
 
     now.setTime(now.getTime() - (3 * 60 * 60 * 1000));
     now.setSeconds(0);
+    now.setMinutes(0);
     now.setMilliseconds(0);
 
-    let nowMinutes = now.getMinutes();
+    let nowHours = now.getHours();
 
-    now.setTime(now.getTime() - ((((nowMinutes + 15) % 15) + 30) * 60 * 1000));
+    lastPredictionDate.setTime(now.getTime() - ((((nowHours + 6) % 6) + 3) * 60 * 60 * 1000));
+
+    if (!IS_FLASH) {
+        lastPredictionDate.setTime(lastPredictionDate.getTime() - (3 * 60 * 60 * 1000));
+    }
+
+    const offset = (now - lastPredictionDate) / (60 * 60 * 1000)
 
     /** Use promises? */
     if (!true) {
         const framesPromises = [];
 
         for (let i = 0; i < framesLimit; i++) {
-            const date = new Date(now - (15 * 60 * 1000) * i);
-
-            framesPromises.push(getFrame(date, place));
-
-            frames = await Promise.all(framesPromises);
+            framesPromises.push(getFrame(lastPredictionDate, offset + i, place));
         }
 
         frames = await Promise.all(framesPromises);
     } else {
         for (let i = 0; i < framesLimit; i++) {
-            const date = new Date(now - (15 * 60 * 1000) * i);
-
-            frames.push(await getFrame(date, place));
+            frames.push(await getFrame(lastPredictionDate, offset + i, place));
         }
     }
 
     console.log(frames);
 
-    frames.reverse();
-
-    for (let i = 0; i < 4; i++) {
-        frames.push(frames[frames.length - 1]);
-    }
-
     /**
      * Create video file
      */
     try {
-        // const datestamp = `${now.getFullYear()}${now.getMonth()}${now.getDate()}-${now.getHours()}-${now.getMinutes()}`;
-
-        // const gifPath = path.join(__dirname, 'output', `${place}_${datestamp}_sat.mp4`);
-        const gifPath = path.join(__dirname, 'output', `sat_${place}_latest.mp4`);
-
-        // if (fs.existsSync(gifPath)) {
-        //     return gifPath;
-        // }
+        const gifPath = path.join(get_directory(__dirname, 'output'), `pre_${place}_latest.mp4`);
 
         await create_video(frames, gifPath);
 

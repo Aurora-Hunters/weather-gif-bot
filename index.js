@@ -7,16 +7,16 @@ const TelegramBot = require('node-telegram-bot-api');
 const bot = new TelegramBot(process.env.BOT_TOKEN, {polling: true});
 
 
-const createSatelliteGif = require('./src/weather/index_sat');
-const createCloudsGif = require('./src/weather/index_pre');
+const createSatelliteGif = require('./src/index_sat');
+const createCloudsGif = require('./src/index_pre');
 
 const fs = require('fs');
 const path = require('path');
-const downloadImage = require('./src/weather/tools/download-image');
-const randomString = require('./src/weather/tools/randomString');
-const ffmpeg = require('./src/ffmpeg');
+const downloadImage = require('./src/tools/download-image');
+const randomString = require('./src/tools/randomString');
+const ffmpeg = require('./src/tools/ffmpeg');
 
-const PLACES = require('./src/weather/tools/places');
+const PLACES = require('./src/tools/places');
 const SOLAR_HOLES = [
     '0094',
     '0131',
