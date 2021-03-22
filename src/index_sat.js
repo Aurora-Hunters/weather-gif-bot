@@ -122,7 +122,7 @@ module.exports = async (place = PLACE.LEN) => {
      * Create video file
      */
     try {
-        const gifPath = path.join(get_directory(__dirname, 'output'), `sat_${place}_latest.mp4`);
+        const gifPath = path.join(get_directory(__dirname, '..', 'output'), `sat_${place}_latest.mp4`);
 
         await create_video(frames, gifPath);
 

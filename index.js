@@ -6,7 +6,6 @@ require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const bot = new TelegramBot(process.env.BOT_TOKEN, {polling: true});
 
-
 const createSatelliteGif = require('./src/index_sat');
 const createCloudsGif = require('./src/index_pre');
 
@@ -56,17 +55,19 @@ const cron = require('node-cron');
     });
 })();
 
+const sendPhotos = (listOfImageSources) => {
 
+}
 
 bot.onText(/\/start/, (msg, match) => {
     const chatId = msg.chat.id;
     const message =
-        `Привет. Умею присылать гифки погодных условий со спутника и прогнозы облачности.\n` +
+        `Hello. I can show you weather data from satellites and cloud coverage prediction.\n` +
         `\n` +
-        `Облака со спутника /clouds_sat\n` +
-        `Прогноз облачности /clouds_pre\n` +
+        `Clouds from satellite for past 2 hours /clouds_sat\n` +
+        `Cloud coverage prediction for future 25 hours /clouds_pre\n` +
         `\n` +
-        `Вебкамеры /webcam`;
+        `Show webcam view /webcam`;
 
     bot.sendChatAction(chatId, 'typing');
     bot.sendMessage(chatId, message);
@@ -75,7 +76,7 @@ bot.onText(/\/start/, (msg, match) => {
 bot.onText(/^\/webcam(@\w+)?$/, (msg, match) => {
     const chatId = msg.chat.id;
     const message =
-        `Напишите в сообщении название места с камерой или выберите команду.\n` +
+        `Name a webcam in message or use commands.\n` +
         `\n` +
         `78° — /svalbard — Шпицберген / Свальбард / Грумант\n` +
         // `69° — /skibotn — Шиботн\n` +
@@ -84,6 +85,7 @@ bot.onText(/^\/webcam(@\w+)?$/, (msg, match) => {
         `67° — /kiruna — Кируна\n` +
         `67° — /sodankyla — Соданкюля\n` +
         `66° — /porjus — Порьюс / Йокмокк\n` +
+        `65° — /alaska — Аляска\n` +
         `62° — /hankasalmi — Ханкасалми`;
 
     bot.sendChatAction(chatId, 'typing');
@@ -276,7 +278,7 @@ bot.onText(/^\/clouds_sat(.*)(@\w+)?$/, async (msg, match) => {
     place = place.substring(place.indexOf("_") + 1);
 
     if (place in PLACES) {
-        const gifPath = path.join(__dirname, 'src', 'weather', 'output', `sat_${PLACES[place]}_latest.mp4`);
+        const gifPath = path.join(__dirname, 'output', `sat_${PLACES[place]}_latest.mp4`);
 
         if (!fs.existsSync(gifPath)) {
             const message = `Gif is not ready. Try again in 15 minutes.`;
@@ -328,7 +330,7 @@ bot.onText(/^\/clouds_pre(.*)(@\w+)?$/, async (msg, match) => {
     place = place.substring(place.indexOf("_") + 1);
 
     if (place in PLACES) {
-        const gifPath = path.join(__dirname, 'src', 'weather', 'output', `pre_${PLACES[place]}_latest.mp4`);
+        const gifPath = path.join(__dirname, 'output', `pre_${PLACES[place]}_latest.mp4`);
 
         if (!fs.existsSync(gifPath)) {
             const message = `Gif is not ready. Try again in 15 minutes.`;
@@ -433,6 +435,22 @@ bot.onText(/((A|a)bisko)|(А|а)биск(о|у)/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     let photo = `https://aurorainfo.eu/aurora-live-cameras/abisko-lights-over-lapland-sweden-aurora-live-camera-east.jpg?t=${Date.now()}`;
+
+    if (!SEND_WITHOUT_DOWNLOAD) {
+        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
+    }
+
+    bot.sendChatAction(chatId, 'upload_photo');
+    await bot.sendPhoto(chatId, photo);
+
+    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
+});
+
+
+bot.onText(/((A|a)laska)|(А|а)ляск/, async (msg, match) => {
+    const chatId = msg.chat.id;
+
+    let photo = `https://aurorainfo.eu/aurora-live-cameras/fairbanks-alaska-usa-aurora-live-camera.jpg?t=${Date.now()}`;
 
     if (!SEND_WITHOUT_DOWNLOAD) {
         photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
