@@ -8,6 +8,7 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, {polling: true});
 
 const createSatelliteGif = require('./src/index_sat');
 const createCloudsGif = require('./src/index_pre');
+const createThundersGif = require('./src/index_thunder');
 
 const fs = require('fs');
 const path = require('path');
@@ -43,12 +44,14 @@ const cron = require('node-cron');
 
 (async () => {
     for (const [name, code] of Object.entries(PLACES)) {
+        await createThundersGif(code);
         await createSatelliteGif(code);
         await createCloudsGif(code);
     }
 
     cron.schedule('*/15 * * * *', async () => {
         for (const [name, code] of Object.entries(PLACES)) {
+            await createThundersGif(code);
             await createSatelliteGif(code);
             await createCloudsGif(code);
         }
@@ -104,6 +107,7 @@ bot.onText(/^\/commands(@\w+)?$/, (msg, match) => {
         `\n` +
         `/clouds_sat — available regions for satellite maps\n` +
         `/clouds_pre — available regions for clouds coverage prediction\n` +
+        `/clouds_thunder — available regions for thunderstorm prediction\n` +
         `\n`;
 
     for (const [name, code] of Object.entries(PLACES)) {
@@ -357,6 +361,58 @@ bot.onText(/^\/clouds_pre(.*)(@\w+)?$/, async (msg, match) => {
             `/clouds_pre_TVER\n` +
             `\n` +
             `/clouds_pre_MOSCOW\n` ;
+
+        bot.sendChatAction(chatId, 'typing');
+        bot.sendMessage(chatId, message);
+    }
+});
+
+bot.onText(/^\/clouds_thunder(.*)(@\w+)?$/, async (msg, match) => {
+    const chatId = msg.chat.id;
+
+    let place = match[1];
+
+    /**
+     * Remove bot's name
+     */
+    if (place.indexOf('@') !== -1) {
+        place = place.substring(0, place.indexOf('@'));
+    }
+
+    /**
+     * Remove _
+     * @type {string}
+     */
+    place = place.substring(place.indexOf("_") + 1);
+
+    if (place in PLACES) {
+        const gifPath = path.join(__dirname, 'output', `thunder_${PLACES[place]}_latest.mp4`);
+
+        if (!fs.existsSync(gifPath)) {
+            const message = `Gif is not ready. Try again in 15 minutes.`;
+
+            bot.sendChatAction(chatId, 'typing');
+            bot.sendMessage(chatId, message);
+            return;
+        }
+
+        bot.sendChatAction(chatId, 'upload_video');
+        bot.sendVideo(chatId, gifPath);
+    } else {
+        const message =
+            `Thunderstorms prediction for regions:\n` +
+            `\n` +
+            `/clouds_thunder_EUROPE\n` +
+            `\n` +
+            `/clouds_thunder_LENINGRAD\n`+
+            `\n` +
+            `/clouds_thunder_KARELIA\n` +
+            `\n` +
+            `/clouds_thunder_MURMANSK\n` +
+            `\n` +
+            `/clouds_thunder_TVER\n` +
+            `\n` +
+            `/clouds_thunder_MOSCOW\n` ;
 
         bot.sendChatAction(chatId, 'typing');
         bot.sendMessage(chatId, message);
