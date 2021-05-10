@@ -50,17 +50,17 @@ const getFrame = async function (date, offset, place) {
     await download_image(imageUrl, imagePath);
 
     const mapImage = await Jimp.read(path.join(__dirname, 'assets', 'map', `${place}.png`));
-    // const footerImage = await Jimp.read(path.join(__dirname, 'assets', 'footer', 'clouds.png'));
+    const footerImage = await Jimp.read(path.join(__dirname, 'assets', 'footer', 'thunderstorms.png'));
     const satImage = await Jimp.read(imagePath);
     let newImage = new Jimp(760, 760);
 
     newImage = await newImage
         .composite(satImage, 0, 0)
-        // .composite(footerImage, 0, 0)
+        .composite(footerImage, 0, 0)
         .composite(mapImage, 0, 0);
 
     newImage = await Jimp
-        .loadFont(Jimp.FONT_SANS_16_BLACK)
+        .loadFont(Jimp.FONT_SANS_16_WHITE)
         .then(font => {
             const YEAR = dateTz.getFullYear();
             const MONTH = dateTz.toLocaleString('default', { month: 'short' });

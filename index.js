@@ -306,6 +306,8 @@ bot.onText(/^\/clouds_sat(.*)(@\w+)?$/, async (msg, match) => {
             `\n` +
             `/clouds_sat_MURMANSK\n` +
             `\n` +
+            `/clouds_sat_PSKOV\n` +
+            `\n` +
             `/clouds_sat_TVER\n` +
             `\n` +
             `/clouds_sat_MOSCOW\n`;
@@ -358,6 +360,8 @@ bot.onText(/^\/clouds_pre(.*)(@\w+)?$/, async (msg, match) => {
             `\n` +
             `/clouds_pre_MURMANSK\n` +
             `\n` +
+            `/clouds_pre_PSKOV\n` +
+            `\n` +
             `/clouds_pre_TVER\n` +
             `\n` +
             `/clouds_pre_MOSCOW\n` ;
@@ -409,6 +413,8 @@ bot.onText(/^\/clouds_thunder(.*)(@\w+)?$/, async (msg, match) => {
             `/clouds_thunder_KARELIA\n` +
             `\n` +
             `/clouds_thunder_MURMANSK\n` +
+            `\n` +
+            `/clouds_thunder_PSKOV\n` +
             `\n` +
             `/clouds_thunder_TVER\n` +
             `\n` +

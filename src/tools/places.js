@@ -7,6 +7,7 @@ const PLACE = {
     LENINGRAD: 5063,
     MOSCOW: 5068,
     MURMANSK: 5069,
+    PSKOV: 5081,
     TVER: 5097,
 
     FINNLAND: 946,
