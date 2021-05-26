@@ -95,10 +95,7 @@ module.exports = async (place = PLACE.LEN) => {
     let nowHours = now.getHours();
 
     lastPredictionDate.setTime(now.getTime() - ((((nowHours + 6) % 6) + 3) * 60 * 60 * 1000));
-
-    if (!IS_FLASH) {
-        lastPredictionDate.setTime(lastPredictionDate.getTime() - (3 * 60 * 60 * 1000));
-    }
+    lastPredictionDate.setTime(lastPredictionDate.getTime() - (lastPredictionDate.getHours() * 60 * 60 * 1000));
 
     const offset = (now - lastPredictionDate) / (60 * 60 * 1000)
 
