@@ -427,6 +427,14 @@ bot.onText(/^\/clouds_thunder(.*)(@\w+)?$/, async (msg, match) => {
 
 const SEND_WITHOUT_DOWNLOAD = !false;
 
+bot.onText(/((О|о)ф(ф?)топ)/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    let message = `Чат для оффтопа: https://t.me/aurorahunters_now`;
+
+    bot.sendChatAction(chatId, 'typing');
+    await bot.sendMessage(chatId, message);
+});
+
 bot.onText(/((S|s)valbard)|((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман(т|д))/, async (msg, match) => {
     const chatId = msg.chat.id;
     let photo = `https://aurorainfo.eu/aurora-live-cameras/svalbard-norway-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
