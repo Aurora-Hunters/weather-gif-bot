@@ -90,7 +90,7 @@ bot.onText(/^\/webcam(@\w+)?$/, (msg, match) => {
         `67° — /sodankyla — Соданкюля\n` +
         `66° — /porjus — Порьюс / Йокмокк\n` +
         `65° — /alaska — Аляска\n` +
-        `62° — /hankasalmi — Ханкасалми` +
+        `62° — /hankasalmi — Ханкасалми\n` +
         `61° — /tampere — Тампере`;
 
     bot.sendChatAction(chatId, 'typing');
