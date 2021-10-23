@@ -13,4 +13,4 @@ services:
     ports:
       - '8851:8080'
     volumes:
-      - './output:/web'
+      - './output:/web/output'
