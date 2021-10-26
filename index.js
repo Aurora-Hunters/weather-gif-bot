@@ -617,7 +617,7 @@ bot.onText(/((K|k)ilpi)|(К|к)илпи/, async (msg, match) => {
     if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
 });
 
-bot.onText(/((Y|y)ellowknife)|(((Й|й)?)(Е|е)л(л?)оу(к?)найф)/, async (msg, match) => {
+bot.onText(/((Y|y)ellowknife)|(((Й|й)?)(Е|е)л(л?)оу(к?)найф)|((К|к)анад)/, async (msg, match) => {
     const chatId = msg.chat.id;
 
     let photo = `https://auroramax.phys.ucalgary.ca/recent/recent_1080p.jpg?t=${Date.now()}`;
