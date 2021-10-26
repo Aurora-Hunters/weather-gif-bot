@@ -81,7 +81,7 @@ bot.onText(/^\/webcam(@\w+)?$/, (msg, match) => {
     const message =
         `Name a webcam in message or use commands.\n` +
         `\n` +
-        // `78° — /svalbard — Шпицберген / Свальбард / Грумант\n` +
+        `78° — /svalbard — Шпицберген / Свальбард / Грумант\n` +
         // `69° — /skibotn — Шиботн\n` +
         `69° — /tromso — Тромсе\n` +
         `69° — /kilpi — Килписъярви\n` +
@@ -429,19 +429,19 @@ bot.onText(/^\/clouds_thunder(.*)(@\w+)?$/, async (msg, match) => {
 
 const SEND_WITHOUT_DOWNLOAD = !false;
 
-// bot.onText(/((S|s)valbard)|((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман(т|д))/, async (msg, match) => {
-//     const chatId = msg.chat.id;
-//     let photo = `https://aurorainfo.eu/aurora-live-cameras/svalbard-norway-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
-//
-//     if (!SEND_WITHOUT_DOWNLOAD) {
-//         photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
-//     }
-//
-//     bot.sendChatAction(chatId, 'upload_photo');
-//     await bot.sendPhoto(chatId, photo);
-//
-//     if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
-// });
+bot.onText(/((S|s)valbard)|((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман(т|д))/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    let photo = `https://aurorainfo.eu/aurora-live-cameras/svalbard-norway-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
+
+    if (!SEND_WITHOUT_DOWNLOAD) {
+        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
+    }
+
+    bot.sendChatAction(chatId, 'upload_photo');
+    await bot.sendPhoto(chatId, photo);
+
+    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
+});
 
 bot.onText(/((K|k)iruna)|(К|к)ирун(а|е)/, async (msg, match) => {
     const chatId = msg.chat.id;
