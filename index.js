@@ -81,17 +81,18 @@ bot.onText(/^\/webcam(@\w+)?$/, (msg, match) => {
     const message =
         `Name a webcam in message or use commands.\n` +
         `\n` +
-        `78° — /svalbard — Шпицберген / Свальбард / Грумант\n` +
-        // `69° — /skibotn — Шиботн\n` +
-        `69° — /tromso — Тромсе\n` +
-        `69° — /kilpi — Килписъярви\n` +
-        // `68° — /abisko — Абиску\n` +
-        `67° — /kiruna — Кируна\n` +
-        `67° — /sodankyla — Соданкюля\n` +
-        `66° — /porjus — Порьюс / Йокмокк\n` +
-        `65° — /alaska — Аляска\n` +
-        `62° — /hankasalmi — Ханкасалми\n` +
-        `61° — /tampere — Тампере`;
+        `78° — /svalbard — Шпицберген / Свальбард / Грумант 🇳🇴\n` +
+        // `69° — /skibotn — Шиботн 🇳🇴\n` +
+        `69° — /tromso — Тромсе 🇳🇴\n` +
+        `69° — /kilpi — Килписъярви 🇫🇮\n` +
+        // `68° — /abisko — Абиску 🇸🇪\n` +
+        `67° — /kiruna — Кируна 🇸🇪\n` +
+        `67° — /sodankyla — Соданкюля 🇫🇮\n` +
+        `66° — /porjus — Порьюс / Йокмокк 🇸🇪\n` +
+        `65° — /alaska — Аляска 🇺🇸\n` +
+        `62° — /hankasalmi — Ханкасалми 🇫🇮\n` +
+        `62° — /yellowknife — Йеллоунайф 🇨🇦\n` +
+        `61° — /tampere — Тампере 🇫🇮`;
 
     bot.sendChatAction(chatId, 'typing');
     bot.sendMessage(chatId, message);
@@ -615,6 +616,22 @@ bot.onText(/((K|k)ilpi)|(К|к)илпи/, async (msg, match) => {
 
     if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
 });
+
+bot.onText(/((Y|y)ellowknife)|((((Й|й)?)(E|e)л(л?)оунайф))/, async (msg, match) => {
+    const chatId = msg.chat.id;
+
+    let photo = `https://auroramax.phys.ucalgary.ca/recent/recent_1080p.jpg?t=${Date.now()}`;
+
+    if (!SEND_WITHOUT_DOWNLOAD) {
+        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
+    }
+
+    bot.sendChatAction(chatId, 'upload_photo');
+    await bot.sendPhoto(chatId, photo);
+
+    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
+});
+
 
 bot.onText(/((T|t)ampere)|(Т|т)ампере/, async (msg, match) => {
     const chatId = msg.chat.id;
