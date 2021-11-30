@@ -632,6 +632,7 @@ bot.onText(/^\/webcam(@\w+)?$/, (msg, match) => {
     const chatId = msg.chat.id;
     let message =
         `Name a webcam in message or use commands.\n` +
+        `Get all images by /webcam_all command.\n` +
         `\n`;
 
     dataSources.forEach((source, index) => {
