@@ -607,6 +607,13 @@ dataSources.forEach((source) => {
     bot.onText(source.regexp, async (msg, match) => {
         const chatId = msg.chat.id;
 
+        const command = source.name
+            .replace('ö', 'o')
+            .replace('ä', 'a')
+            .replace('å', 'a')
+            .replace('Å', 'A')
+            .replace('-', '');
+
         const photos = source.data.map((item, index) => {
             return {
                 type: 'photo',
@@ -614,10 +621,10 @@ dataSources.forEach((source) => {
             };
         })
 
-        photos[0].caption = `${source.lat}° — ${source.name}, ${source.country}`
+        photos[0].caption = `${source.lat}° — ${source.name}, ${source.country} — /${command}`
 
         bot.sendChatAction(chatId, 'upload_photo');
-        await bot.sendMediaGroup(chatId, photos);
+        bot.sendMediaGroup(chatId, photos);
     });
 });
 
@@ -633,9 +640,7 @@ bot.onText(/^\/webcam(@\w+)?$/, (msg, match) => {
             .replace('ä', 'a')
             .replace('å', 'a')
             .replace('Å', 'A')
-            .replace('-', '')
-            ;
-
+            .replace('-', '');
 
         message += `${source.lat}° — /${command} — ${source.name}, ${source.country}\n`;
 
@@ -648,4 +653,33 @@ bot.onText(/^\/webcam(@\w+)?$/, (msg, match) => {
 
     bot.sendChatAction(chatId, 'typing');
     bot.sendMessage(chatId, message);
+});
+
+bot.onText(/^\/webcam_all(@\w+)?$/, (msg, match) => {
+    const chatId = msg.chat.id;
+
+    dataSources.forEach((source) => {
+        const chatId = msg.chat.id;
+
+        const command = source.name
+            .replace('ö', 'o')
+            .replace('ä', 'a')
+            .replace('å', 'a')
+            .replace('Å', 'A')
+            .replace('-', '');
+
+        const photos = source.data.map((item, index) => {
+            return {
+                type: 'photo',
+                media: `${source.data[index]}?t=${Date.now()}`
+            };
+        })
+
+        photos[0].caption = `${source.lat}° — ${source.name}, ${source.country} — /${command}`
+
+        bot.sendChatAction(chatId, 'upload_photo');
+        bot.sendMediaGroup(chatId, photos);
+    });
+
+
 });
