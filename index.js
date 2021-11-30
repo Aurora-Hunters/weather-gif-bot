@@ -446,15 +446,15 @@ const dataSources = [
             'http://kho.unis.no/Quicklooks/kho_sony.png'
         ]
     },
-    {
-        name: 'Ny-Ålesund',
-        country: 'Norway',
-        lat: 78,
-        regexp: /((N|n)y(-?)((Å|å)|(A|a))lesund)|((Н|н)ю(-?)((А|а)|(О|о))лес(а|у)н(д|т))/,
-        data: [
-            'http://193.156.10.139/Allsky.jpg'
-        ]
-    },
+    // {
+    //     name: 'Ny-Ålesund',
+    //     country: 'Norway',
+    //     lat: 78,
+    //     regexp: /((N|n)y(-?)((Å|å)|(A|a))lesund)|((Н|н)ю(-?)((А|а)|(О|о))лес(а|у)н(д|т))/,
+    //     data: [
+    //         'http://193.156.10.139/Allsky.jpg'
+    //     ]
+    // },
     {
         name: 'Skibotn',
         country: 'Norway',
