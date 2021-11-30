@@ -76,28 +76,6 @@ bot.onText(/\/start/, (msg, match) => {
     bot.sendMessage(chatId, message);
 });
 
-bot.onText(/^\/webcam(@\w+)?$/, (msg, match) => {
-    const chatId = msg.chat.id;
-    const message =
-        `Name a webcam in message or use commands.\n` +
-        `\n` +
-        `78° — /svalbard — Шпицберген / Свальбард / Грумант 🇳🇴\n` +
-        // `69° — /skibotn — Шиботн 🇳🇴\n` +
-        `69° — /tromso — Тромсе 🇳🇴\n` +
-        `69° — /kilpi — Килписъярви 🇫🇮\n` +
-        // `68° — /abisko — Абиску 🇸🇪\n` +
-        `67° — /kiruna — Кируна 🇸🇪\n` +
-        `67° — /sodankyla — Соданкюля 🇫🇮\n` +
-        `66° — /porjus — Порьюс / Йокмокк 🇸🇪\n` +
-        `65° — /alaska — Аляска 🇺🇸\n` +
-        `62° — /hankasalmi — Ханкасалми 🇫🇮\n` +
-        `62° — /yellowknife — Йеллоунайф 🇨🇦\n` +
-        `61° — /tampere — Тампере 🇫🇮`;
-
-    bot.sendChatAction(chatId, 'typing');
-    bot.sendMessage(chatId, message);
-});
-
 bot.onText(/^\/commands(@\w+)?$/, (msg, match) => {
     const chatId = msg.chat.id;
     let message =
@@ -199,6 +177,22 @@ bot.onText(/((Р|р)укопись)|(^\/solar_map(@\w+)?$)/, (msg, match) => {
     bot.sendChatAction(chatId, 'upload_photo');
     bot.sendMediaGroup(chatId, mediaGroup);
 });
+
+bot.onText(/((Т|т)е(з|с)ис)/, async (msg, match) => {
+    const chatId = msg.chat.id;
+
+    let photo = `https://tesis.lebedev.ru/upload_test/files/fc.png?t=${Date.now()}`;
+
+    if (!SEND_WITHOUT_DOWNLOAD) {
+        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
+    }
+
+    bot.sendChatAction(chatId, 'upload_photo');
+    await bot.sendPhoto(chatId, photo);
+
+    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
+});
+
 
 bot.onText(/^\/solar_holes(@\w+)?$/, (msg, match) => {
     const chatId = msg.chat.id;
@@ -430,220 +424,228 @@ bot.onText(/^\/clouds_thunder(.*)(@\w+)?$/, async (msg, match) => {
 
 const SEND_WITHOUT_DOWNLOAD = !false;
 
-bot.onText(/((S|s)valbard)|((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман(т|д))/, async (msg, match) => {
-    const chatId = msg.chat.id;
-    let photo = `https://aurorainfo.eu/aurora-live-cameras/svalbard-norway-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
+const dataSources = [
+    /**
+     * Norway
+     */
+    {
+        name: 'Longyearbyen',
+        country: 'Norway',
+        lat: 79,
+        regexp: /((L|l)ongyearbyen)|((Л|л)онг)/,
+        data: [
+            'http://kho.unis.no/Quicklooks/ZWO/Allsky.jpg'
+        ]
+    },
+    {
+        name: 'Svalbard',
+        country: 'Norway',
+        lat: 78,
+        regexp: /((S|s)valbard)|((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман(т|д))/,
+        data: [
+            'http://kho.unis.no/Quicklooks/kho_sony.png'
+        ]
+    },
+    {
+        name: 'Ny-Ålesund',
+        country: 'Norway',
+        lat: 78,
+        regexp: /((N|n)y(-?)((Å|å)|(A|a))lesund)|((Н|н)ю(-?)((А|а)|(О|о))лес(а|у)н(д|т))/,
+        data: [
+            'http://193.156.10.139/Allsky.jpg'
+        ]
+    },
+    {
+        name: 'Skibotn',
+        country: 'Norway',
+        lat: 69,
+        regexp: /((S|s)kibotn)|((Ш|ш)ибот(н?))|((T|t)roms(ø|o))|((Т|т)ромс(е|ё))/,
+        data: [
+            // 'https://fox.phys.uit.no/ASC/BACC5.jpg',
+            'https://fox.phys.uit.no/ASC/Latest_ASC01.png',
 
-    if (!SEND_WITHOUT_DOWNLOAD) {
-        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
-    }
+            /**
+             * Moved from Ramfjord
+             */
+            'https://tromsoe-ai.cei.uec.ac.jp/~nanjo/public/aurora_alert/latest.jpg'
+        ]
+    },
+    // {
+    //     name: 'Ramfjord',
+    //     country: 'Norway',
+    //     lat: 69,
+    //     regexp: /((R|r)amfjord)|((Р|р)амф((ъ|ь)?)(ё|о)рд)/,
+    //     data: [
+    //         'https://tromsoe-ai.cei.uec.ac.jp/~nanjo/public/aurora_alert/latest.jpg'
+    //     ]
+    // },
 
-    bot.sendChatAction(chatId, 'upload_photo');
-    await bot.sendPhoto(chatId, photo);
+    /**
+     * Finland
+     */
+    {
+        name: 'Kevo',
+        country: 'Finland',
+        lat: 69,
+        regexp: /((K|k)evo)|((К|к)ево)/,
+        data: [
+            'https://space.fmi.fi/MIRACLE/ASC/ASC_keograms/tmp_KEV_keo/Allsky_KEVO.jpg'
+        ]
+    },
+    {
+        name: 'Muonio',
+        country: 'Finland',
+        lat: 68,
+        regexp: /((M|m)uonio)|((М|м)уонио)/,
+        data: [
+            'https://aurorasnow.fmi.fi/public_service/images/latest_MUO.jpg'
+        ]
+    },
+    {
+        name: 'Sodankylä',
+        country: 'Finland',
+        lat: 67,
+        regexp: /((S|s)odankyl(ä|a))|((С|с)оданкюл(я|а))/,
+        data: [
+            'https://www.sgo.fi/Data/RealTime/Kuvat/UCL.jpg'
+        ]
+    },
+    {
+        name: 'Nyrölä',
+        country: 'Finland',
+        lat: 62,
+        regexp: /((N|n)yr(ö|o)l(ä|a))|((Н|н)юрол(а|я))/,
+        data: [
+            'http://nyrola.jklsirius.fi/allsky/image-resize.jpg'
+        ]
+    },
+    {
+        name: 'Hankasalmi',
+        country: 'Finland',
+        lat: 62,
+        regexp: /((H|h)ankasalmi)|((Х|х)анкасалми)/,
+        data: [
+            'https://www.ursa.fi/yhd/sirius/sivut/kuvat/ImageLastFTP_AllSKY.jpg'
+        ]
+    },
+    {
+        name: 'Tampere',
+        country: 'Finland',
+        lat: 61,
+        regexp: /((T|t)ampere)|((Т|т)ампере)/,
+        data: [
+            'https://www.ursa.fi/yhd/tampereenursa/Pics/latest_CAM-20.jpg'
+        ]
+    },
+    {
+        name: 'Pori',
+        country: 'Finland',
+        lat: 61,
+        regexp: /((P|p)ori)|((П|п)ори)/,
+        data: [
+            'https://karhunvartijat.fi/allsky/images/image-resize.jpg'
+        ]
+    },
+    {
+        name: 'Metsähovi',
+        country: 'Finland',
+        lat: 60,
+        regexp: /((M|m)ets(ä|a)hovi)|((М|м)етсахови)/,
+        data: [
+            'https://space.fmi.fi/MIRACLE/RWC/latest_HOV.jpg'
+        ]
+    },
 
-    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
+    /**
+     * Sweden
+     */
+    {
+        name: 'Kiruna',
+        country: 'Sweden',
+        lat: 67,
+        regexp: /((K|k)iruna)|((К|к)ирун(a?))/,
+        data: [
+            'https://www.irf.se/alis/allsky/krn/latest_medium.jpeg'
+        ]
+    },
+    {
+        name: 'Porjus',
+        country: 'Sweden',
+        lat: 66,
+        regexp: /((P|p)orjus)|((П|п)ор((д?)жу|ью)с)/,
+        data: [
+            'https://uk.jokkmokk.jp/photo/nr4/latest.jpg',
+            'https://uk.jokkmokk.jp/photo/nr3/latest.jpg',
+            // 'https://uk.jokkmokk.jp/photo/nr5/latest.jpg'
+        ]
+    },
+
+    // /**
+    //  *
+    //  */
+    // {
+    //     name: 'Yellowknife',
+    //     country: 'Canada',
+    //     lat: 62,
+    //     regexp: /((|) )|((|) )/,
+    //     data: [
+    //         'http://auroramax.phys.ucalgary.ca/recent/recent_1080p.jpg'
+    //     ]
+    // },
+    // {
+    //     name: '',
+    //     country: '',
+    //     lat: 69,
+    //     regexp: /((|) )|((|) )/,
+    //     data: [
+    //         ''
+    //     ]
+    // },
+];
+
+dataSources.forEach((source) => {
+    bot.onText(source.regexp, async (msg, match) => {
+        const chatId = msg.chat.id;
+
+        const photos = source.data.map((item, index) => {
+            return {
+                type: 'photo',
+                media: `${source.data[index]}?t=${Date.now()}`
+            };
+        })
+
+        photos[0].caption = `${source.lat}° — ${source.name}, ${source.country}`
+
+        bot.sendChatAction(chatId, 'upload_photo');
+        await bot.sendMediaGroup(chatId, photos);
+    });
 });
 
-bot.onText(/((K|k)iruna)|(К|к)ирун(а|е)/, async (msg, match) => {
+bot.onText(/^\/webcam(@\w+)?$/, (msg, match) => {
     const chatId = msg.chat.id;
-    let photo = `https://aurorainfo.eu/aurora-live-cameras/kiruna-sweden-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
+    let message =
+        `Name a webcam in message or use commands.\n` +
+        `\n`;
 
-    if (!SEND_WITHOUT_DOWNLOAD) {
-        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
-    }
-
-    bot.sendChatAction(chatId, 'upload_photo');
-    await bot.sendPhoto(chatId, photo);
-
-    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
-});
-
-bot.onText(/((P|p)orjus)|((П|п)ор((д?)жу|ью)с)|((Й|й)окмок(к?))/, async (msg, match) => {
-    const chatId = msg.chat.id;
-
-    let photos = [
-        `https://aurorainfo.eu/aurora-live-cameras/porjus-sweden-north-view-sweden-aurora-live-camera.jpg?t=${Date.now()}`,
-        `https://aurorainfo.eu/aurora-live-cameras/porjus-sweden-west-view-aurora-live-camera.jpg?t=${Date.now()}`,
-        `https://aurorainfo.eu/aurora-live-cameras/porjus-sweden-east-view-sweden-aurora-live-camera.jpg?t=${Date.now()}`
-    ];
-
-    if (!SEND_WITHOUT_DOWNLOAD) {
-        photos[0] = await downloadImage(photos[0], path.join(__dirname, 'temp', `${randomString()}.jpg`));
-        photos[1] = await downloadImage(photos[1], path.join(__dirname, 'temp', `${randomString()}.jpg`));
-        photos[2] = await downloadImage(photos[2], path.join(__dirname, 'temp', `${randomString()}.jpg`));
-    }
-
-    bot.sendChatAction(chatId, 'upload_photo');
-    await bot.sendMediaGroup(chatId, [
-        {
-            type: 'photo',
-            media: photos[0]
-        },
-        {
-            type: 'photo',
-            media: photos[1]
-        },
-        {
-            type: 'photo',
-            media: photos[2]
-        },
-    ]);
-
-    if (!SEND_WITHOUT_DOWNLOAD) { try {
-        fs.unlinkSync(photos[0]);
-        fs.unlinkSync(photos[1]);
-        fs.unlinkSync(photos[2]);
-    } catch (e) {} }
-});
-
-// bot.onText(/((A|a)bisko)|(А|а)биск(о|у)/, async (msg, match) => {
-//     const chatId = msg.chat.id;
-//
-//     let photo = `https://aurorainfo.eu/aurora-live-cameras/abisko-lights-over-lapland-sweden-aurora-live-camera-east.jpg?t=${Date.now()}`;
-//
-//     if (!SEND_WITHOUT_DOWNLOAD) {
-//         photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
-//     }
-//
-//     bot.sendChatAction(chatId, 'upload_photo');
-//     await bot.sendPhoto(chatId, photo);
-//
-//     if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
-// });
+    dataSources.forEach((source, index) => {
+        const command = source.name
+            .replace('ö', 'o')
+            .replace('ä', 'a')
+            .replace('å', 'a')
+            .replace('Å', 'A')
+            .replace('-', '')
+            ;
 
 
-bot.onText(/((A|a)laska)|(А|а)ляск/, async (msg, match) => {
-    const chatId = msg.chat.id;
+        message += `${source.lat}° — /${command} — ${source.name}, ${source.country}\n`;
 
-    let photo = `https://aurorainfo.eu/aurora-live-cameras/fairbanks-alaska-usa-aurora-live-camera.jpg?t=${Date.now()}`;
+        try {
+            if (source.country !== dataSources[index + 1].country) {
+                message += '\n';
+            }
+        } catch (e) {}
+    })
 
-    if (!SEND_WITHOUT_DOWNLOAD) {
-        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
-    }
-
-    bot.sendChatAction(chatId, 'upload_photo');
-    await bot.sendPhoto(chatId, photo);
-
-    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
-});
-
-// bot.onText(/((S|s)kibotn)|((Ш|ш)|(Ск|ск))ибот(н?)/, async (msg, match) => {
-//     const chatId = msg.chat.id;
-//
-//     let photo = `https://aurorainfo.eu/aurora-live-cameras/skibotn-norway-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
-//
-//     if (!SEND_WITHOUT_DOWNLOAD) {
-//         photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
-//     }
-//
-//     bot.sendChatAction(chatId, 'upload_photo');
-//     await bot.sendPhoto(chatId, photo);
-//
-//     if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
-// });
-
-bot.onText(/((R|r)amfjord)|((T|t)roms(e|o))|(Т|т)ромс((е|ё)?)/, async (msg, match) => {
-    const chatId = msg.chat.id;
-
-    let photo = `https://aurorainfo.eu/aurora-live-cameras/ramfjordmoen-norway-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
-
-    if (!SEND_WITHOUT_DOWNLOAD) {
-        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
-    }
-
-    bot.sendChatAction(chatId, 'upload_photo');
-    await bot.sendPhoto(chatId, photo);
-
-    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
-});
-
-bot.onText(/((Т|т)е(з|с)ис)|((Л|л)ебедев)/, async (msg, match) => {
-    const chatId = msg.chat.id;
-
-    let photo = `https://tesis.lebedev.ru/upload_test/files/fc.png?t=${Date.now()}`;
-
-    if (!SEND_WITHOUT_DOWNLOAD) {
-        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
-    }
-
-    bot.sendChatAction(chatId, 'upload_photo');
-    await bot.sendPhoto(chatId, photo);
-
-    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
-});
-
-bot.onText(/((S|s)odankyla)|(С|с)оданк(ю|у)л/, async (msg, match) => {
-    const chatId = msg.chat.id;
-
-    let photo = `https://aurorainfo.eu/aurora-live-cameras/sodankyla-finland-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
-
-    if (!SEND_WITHOUT_DOWNLOAD) {
-        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
-    }
-
-    bot.sendChatAction(chatId, 'upload_photo');
-    await bot.sendPhoto(chatId, photo);
-
-    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
-});
-
-bot.onText(/((H|h)ankasalmi)|(Х|х)анкасалми/, async (msg, match) => {
-    const chatId = msg.chat.id;
-
-    let photo = `https://aurorainfo.eu/aurora-live-cameras/hankasalmi-finland-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
-
-    if (!SEND_WITHOUT_DOWNLOAD) {
-        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
-    }
-
-    bot.sendChatAction(chatId, 'upload_photo');
-    await bot.sendPhoto(chatId, photo);
-
-    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
-});
-
-bot.onText(/((K|k)ilpi)|(К|к)илпи/, async (msg, match) => {
-    const chatId = msg.chat.id;
-
-    let photo = `https://aurorainfo.eu/aurora-live-cameras/kilpissafarit-all-sky-aurora-live-camera.jpg?t=${Date.now()}`;
-
-    if (!SEND_WITHOUT_DOWNLOAD) {
-        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
-    }
-
-    bot.sendChatAction(chatId, 'upload_photo');
-    await bot.sendPhoto(chatId, photo);
-
-    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
-});
-
-bot.onText(/((Y|y)ellowknife)|(((Й|й)?)(Е|е)л(л?)оу(к?)найф)|((К|к)анад)/, async (msg, match) => {
-    const chatId = msg.chat.id;
-
-    let photo = `https://auroramax.phys.ucalgary.ca/recent/recent_1080p.jpg?t=${Date.now()}`;
-
-    if (!SEND_WITHOUT_DOWNLOAD) {
-        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
-    }
-
-    bot.sendChatAction(chatId, 'upload_photo');
-    await bot.sendPhoto(chatId, photo);
-
-    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
-});
-
-
-bot.onText(/((T|t)ampere)|(Т|т)ампере/, async (msg, match) => {
-    const chatId = msg.chat.id;
-
-    let photo = `https://aurorainfo.eu/aurora-live-cameras/tampere-finland-aurora-live-camera.jpg?t=${Date.now()}`;
-
-    if (!SEND_WITHOUT_DOWNLOAD) {
-        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
-    }
-
-    bot.sendChatAction(chatId, 'upload_photo');
-    await bot.sendPhoto(chatId, photo);
-
-    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
+    bot.sendChatAction(chatId, 'typing');
+    bot.sendMessage(chatId, message);
 });
