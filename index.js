@@ -211,6 +211,39 @@ bot.onText(/^\/solar_holes(@\w+)?$/, (msg, match) => {
     bot.sendMediaGroup(chatId, mediaGroup);
 });
 
+bot.onText(/\/graph_all/, (msg, match) => {
+    const chatId = msg.chat.id;
+    const mediaGroup = [];
+    const GRAPHS = [
+        {
+            name: 'bz',
+            url: 'https://auroralights.ru/renders/copyright/Bz-3h.png'
+        },
+        {
+            name: 'speed',
+            url: 'https://auroralights.ru/renders/copyright/speed+arrival-3h.png'
+        },
+        {
+            name: 'density',
+            url: 'https://auroralights.ru/renders/copyright/density-3h.png'
+        },
+        {
+            name: 'bt',
+            url: 'https://auroralights.ru/renders/copyright/Bt-3h.png'
+        },
+    ]
+
+    GRAPHS.forEach(element => {
+        mediaGroup.push({
+            type: 'photo',
+            media: `${element.url}?${Date.now()}`
+        })
+    })
+
+    bot.sendChatAction(chatId, 'upload_photo');
+    bot.sendMediaGroup(chatId, mediaGroup);
+});
+
 bot.onText(/^\/solar_holes_(\d{4})(@\w+)?$/, (msg, match) => {
     const chatId = msg.chat.id;
     const element = match[1];
