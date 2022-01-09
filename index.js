@@ -62,6 +62,23 @@ const sendPhotos = (listOfImageSources) => {
 
 }
 
+function isUserAdmin(msg, bot) {
+    if (!msg.chat) {
+        msg.chat = msg.message.chat;
+    }
+
+    return new Promise(function(resolve, reject) {
+        bot.getChatAdministrators(msg.chat.id).then(admins => {
+            for (let i = 0; i < admins.length; i++) {
+                if (admins[i].user.id == msg.from.id) {
+                    resolve(1);
+                };
+            };
+            reject(0);
+        });
+    });
+}
+
 bot.onText(/\/start/, (msg, match) => {
     const chatId = msg.chat.id;
     const message =
@@ -70,7 +87,9 @@ bot.onText(/\/start/, (msg, match) => {
         `Clouds from satellite for past 2 hours /clouds_sat\n` +
         `Cloud coverage prediction for future 25 hours /clouds_pre\n` +
         `\n` +
-        `Show webcam view /webcam`;
+        `Show webcam view /webcam\n` + 
+		`\n` + 
+		`Note: for group chats, only group administrators can use the bot. Feel free to ask @weather_gif_bot in direct messaging.`;
 
     bot.sendChatAction(chatId, 'typing');
     bot.sendMessage(chatId, message);
@@ -103,356 +122,382 @@ bot.onText(/^\/commands(@\w+)?$/, (msg, match) => {
 });
 
 bot.onText(/(^\/cme_lollipop(@\w+)?$)|((Л|л)еден(е?)ц)/, async (msg, match) => {
-    const chatId = msg.chat.id;
+    isUserAdmin(msg, bot).then(confirmed => {
+		const chatId = msg.chat.id;
 
-    let video = `https://iswa.gsfc.nasa.gov/IswaSystemWebApp/iSWACygnetStreamer?timestamp=2038-01-23+00%3A44%3A00&window=-1&cygnetId=261&t=${Date.now()}`;
+		let video = `https://iswa.gsfc.nasa.gov/IswaSystemWebApp/iSWACygnetStreamer?timestamp=2038-01-23+00%3A44%3A00&window=-1&cygnetId=261&t=${Date.now()}`;
 
-    bot.sendChatAction(chatId, 'upload_video');
+		bot.sendChatAction(chatId, 'upload_video');
 
-    video = await downloadImage(video, path.join(__dirname, 'temp', `${randomString()}.gif`));
+		video = await downloadImage(video, path.join(__dirname, 'temp', `${randomString()}.gif`));
 
-    bot.sendChatAction(chatId, 'upload_video');
+		bot.sendChatAction(chatId, 'upload_video');
 
-    ffmpeg()
-        .input(video)
-        .outputOption([
-            '-y',
-            '-pix_fmt yuv420p'
-        ])
-        .on('end', async function(stdout, stderr) {
-            console.log('Transcoding succeeded!');
+		ffmpeg()
+			.input(video)
+			.outputOption([
+				'-y',
+				'-pix_fmt yuv420p'
+			])
+			.on('end', async function(stdout, stderr) {
+				console.log('Transcoding succeeded!');
 
-            video += '.mp4';
-            await bot.sendVideo(chatId, video);
+				video += '.mp4';
+				await bot.sendVideo(chatId, video);
 
-            try { fs.unlinkSync(video) } catch (e) {}
-        })
-        .save(`${video}.mp4`);
+				try { fs.unlinkSync(video) } catch (e) {}
+			})
+			.save(`${video}.mp4`);
+	});
 });
 
 bot.onText(/^\/solar(@\w+)?$/, (msg, match) => {
-    const chatId = msg.chat.id;
-    let message =
-        `/space_weather — X-Ray Flux, Proton Flux, Geomagnetic activity\n` +
-        `\n` +
-        `/solar_map — handwritten map\n` +
-        `\n` +
-        `/solar_holes\n` +
-        `/solar_plots\n` +
-        `\n` +
-        `48h movies:\n`;
+    isUserAdmin(msg, bot).then(confirmed => {
+		const chatId = msg.chat.id;
+		let message =
+			`/space_weather — X-Ray Flux, Proton Flux, Geomagnetic activity\n` +
+			`\n` +
+			`/solar_map — handwritten map\n` +
+			`\n` +
+			`/solar_holes\n` +
+			`/solar_plots\n` +
+			`\n` +
+			`48h movies:\n`;
 
-    SOLAR_HOLES.forEach(element => {
-        message += `/solar_holes_${element}\n`;
-    })
+		SOLAR_HOLES.forEach(element => {
+			message += `/solar_holes_${element}\n`;
+		})
 
-    SOLAR_PLOTS.forEach(element => {
-        message += `/solar_plots_${element}\n`;
-    })
+		SOLAR_PLOTS.forEach(element => {
+			message += `/solar_plots_${element}\n`;
+		})
 
-    bot.sendChatAction(chatId, 'typing');
-    bot.sendMessage(chatId, message);
+		bot.sendChatAction(chatId, 'typing');
+		bot.sendMessage(chatId, message);
+	});
 });
 
 bot.onText(/^\/space_weather(@\w+)?$/, (msg, match) => {
-    const chatId = msg.chat.id;
+    isUserAdmin(msg, bot).then(confirmed => {
+		const chatId = msg.chat.id;
 
-    const mediaGroup = [{
-        type: 'photo',
-        media: `https://services.swpc.noaa.gov/images/swx-overview-large.gif?${Date.now()}`
-    }];
+		const mediaGroup = [{
+			type: 'photo',
+			media: `https://services.swpc.noaa.gov/images/swx-overview-large.gif?${Date.now()}`
+		}];
 
-    bot.sendChatAction(chatId, 'upload_photo');
-    bot.sendMediaGroup(chatId, mediaGroup);
+		bot.sendChatAction(chatId, 'upload_photo');
+		bot.sendMediaGroup(chatId, mediaGroup);
+	});
 });
 
 bot.onText(/((Р|р)укопись)|(^\/solar_map(@\w+)?$)/, (msg, match) => {
-    const chatId = msg.chat.id;
+    isUserAdmin(msg, bot).then(confirmed => {
+		const chatId = msg.chat.id;
 
-    const mediaGroup = [{
-        type: 'photo',
-        media: `https://services.swpc.noaa.gov/images/synoptic-map.jpg?${Date.now()}`
-    }];
+		const mediaGroup = [{
+			type: 'photo',
+			media: `https://services.swpc.noaa.gov/images/synoptic-map.jpg?${Date.now()}`
+		}];
 
-    bot.sendChatAction(chatId, 'upload_photo');
-    bot.sendMediaGroup(chatId, mediaGroup);
+		bot.sendChatAction(chatId, 'upload_photo');
+		bot.sendMediaGroup(chatId, mediaGroup);
+	});
 });
 
 bot.onText(/((Т|т)е(з|с)ис)/, async (msg, match) => {
-    const chatId = msg.chat.id;
+    isUserAdmin(msg, bot).then(confirmed => {
+		const chatId = msg.chat.id;
 
-    let photo = `https://tesis.lebedev.ru/upload_test/files/fc.png?t=${Date.now()}`;
+		let photo = `https://tesis.lebedev.ru/upload_test/files/fc.png?t=${Date.now()}`;
 
-    if (!SEND_WITHOUT_DOWNLOAD) {
-        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
-    }
+		if (!SEND_WITHOUT_DOWNLOAD) {
+			photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
+		}
 
-    bot.sendChatAction(chatId, 'upload_photo');
-    await bot.sendPhoto(chatId, photo);
+		bot.sendChatAction(chatId, 'upload_photo');
+		await bot.sendPhoto(chatId, photo);
 
-    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
+		if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
+	});
 });
 
 
 bot.onText(/^\/solar_holes(@\w+)?$/, (msg, match) => {
-    const chatId = msg.chat.id;
-    const size = 1024;
+	isUserAdmin(msg, bot).then(confirmed => {
+		const chatId = msg.chat.id;
+		const size = 1024;
 
-    const mediaGroup = [];
+		const mediaGroup = [];
 
-    SOLAR_HOLES.forEach(element => {
-        mediaGroup.push({
-            type: 'photo',
-            media: `https://sdo.gsfc.nasa.gov/assets/img/latest/latest_${size}_${element}.jpg?${Date.now()}`
-        })
-    })
+		SOLAR_HOLES.forEach(element => {
+			mediaGroup.push({
+				type: 'photo',
+				media: `https://sdo.gsfc.nasa.gov/assets/img/latest/latest_${size}_${element}.jpg?${Date.now()}`
+			})
+		})
 
-    bot.sendChatAction(chatId, 'upload_photo');
-    bot.sendMediaGroup(chatId, mediaGroup);
+		bot.sendChatAction(chatId, 'upload_photo');
+		bot.sendMediaGroup(chatId, mediaGroup);
+	});
 });
 
 bot.onText(/\/graph_all/, (msg, match) => {
-    const chatId = msg.chat.id;
-    const mediaGroup = [];
-    const GRAPHS = [
-        {
-            name: 'bz',
-            url: 'https://auroralights.ru/renders/copyright/Bz-3h.png'
-        },
-        {
-            name: 'speed',
-            url: 'https://auroralights.ru/renders/copyright/speed+arrival-3h.png'
-        },
-        {
-            name: 'density',
-            url: 'https://auroralights.ru/renders/copyright/density-3h.png'
-        },
-        {
-            name: 'bt',
-            url: 'https://auroralights.ru/renders/copyright/Bt-3h.png'
-        },
-    ]
+	isUserAdmin(msg, bot).then(confirmed => {
+		const chatId = msg.chat.id;
+		const mediaGroup = [];
+		const GRAPHS = [
+			{
+				name: 'bz',
+				url: 'https://auroralights.ru/renders/copyright/Bz-3h.png'
+			},
+			{
+				name: 'speed',
+				url: 'https://auroralights.ru/renders/copyright/speed+arrival-3h.png'
+			},
+			{
+				name: 'density',
+				url: 'https://auroralights.ru/renders/copyright/density-3h.png'
+			},
+			{
+				name: 'bt',
+				url: 'https://auroralights.ru/renders/copyright/Bt-3h.png'
+			},
+		]
 
-    GRAPHS.forEach(element => {
-        mediaGroup.push({
-            type: 'photo',
-            media: `${element.url}?${Date.now()}`
-        })
-    })
+		GRAPHS.forEach(element => {
+			mediaGroup.push({
+				type: 'photo',
+				media: `${element.url}?${Date.now()}`
+			})
+		})
 
-    bot.sendChatAction(chatId, 'upload_photo');
-    bot.sendMediaGroup(chatId, mediaGroup);
+		bot.sendChatAction(chatId, 'upload_photo');
+		bot.sendMediaGroup(chatId, mediaGroup);
+	});
 });
 
 bot.onText(/^\/solar_holes_(\d{4})(@\w+)?$/, (msg, match) => {
-    const chatId = msg.chat.id;
-    const element = match[1];
-    const mediaGroup = [];
+    isUserAdmin(msg, bot).then(confirmed => {
+		const chatId = msg.chat.id;
+		const element = match[1];
+		const mediaGroup = [];
 
-    if (element in SOLAR_HOLES) return;
+		if (element in SOLAR_HOLES) return;
 
-    mediaGroup.push({
-        type: 'video',
-        media: `https://sdo.gsfc.nasa.gov/assets/img/latest/mpeg/latest_512_${element}.mp4?${Date.now()}`
-    })
+		mediaGroup.push({
+			type: 'video',
+			media: `https://sdo.gsfc.nasa.gov/assets/img/latest/mpeg/latest_512_${element}.mp4?${Date.now()}`
+		})
 
-    bot.sendChatAction(chatId, 'upload_video');
-    bot.sendMediaGroup(chatId, mediaGroup);
+		bot.sendChatAction(chatId, 'upload_video');
+		bot.sendMediaGroup(chatId, mediaGroup);
+	});
 });
 
 bot.onText(/^\/solar_plots(@\w+)?$/, (msg, match) => {
-    const chatId = msg.chat.id;
-    const size = 1024;
+    isUserAdmin(msg, bot).then(confirmed => {
+		const chatId = msg.chat.id;
+		const size = 1024;
 
-    const mediaGroup = [];
+		const mediaGroup = [];
 
-    SOLAR_PLOTS.forEach(element => {
-        mediaGroup.push({
-            type: 'photo',
-            media: `https://sdo.gsfc.nasa.gov/assets/img/latest/latest_${size}_${element}.jpg?${Date.now()}`
-        })
-    });
+		SOLAR_PLOTS.forEach(element => {
+			mediaGroup.push({
+				type: 'photo',
+				media: `https://sdo.gsfc.nasa.gov/assets/img/latest/latest_${size}_${element}.jpg?${Date.now()}`
+			})
+		});
 
-    bot.sendChatAction(chatId, 'upload_photo');
-    bot.sendMediaGroup(chatId, mediaGroup);
+		bot.sendChatAction(chatId, 'upload_photo');
+		bot.sendMediaGroup(chatId, mediaGroup);
+	});
 });
 
 bot.onText(/^\/solar_plots_(\w{5})(@\w+)?$/, (msg, match) => {
-    const chatId = msg.chat.id;
-    const element = match[1];
-    const mediaGroup = [];
+    isUserAdmin(msg, bot).then(confirmed => {
+		const chatId = msg.chat.id;
+		const element = match[1];
+		const mediaGroup = [];
 
-    if (element in SOLAR_PLOTS) return;
+		if (element in SOLAR_PLOTS) return;
 
-    mediaGroup.push({
-        type: 'video',
-        media: `https://sdo.gsfc.nasa.gov/assets/img/latest/mpeg/latest_512_${element}.mp4?${Date.now()}`
-    })
+		mediaGroup.push({
+			type: 'video',
+			media: `https://sdo.gsfc.nasa.gov/assets/img/latest/mpeg/latest_512_${element}.mp4?${Date.now()}`
+		})
 
-    bot.sendChatAction(chatId, 'upload_video');
-    bot.sendMediaGroup(chatId, mediaGroup);
+		bot.sendChatAction(chatId, 'upload_video');
+		bot.sendMediaGroup(chatId, mediaGroup);
+	});
 });
 
 bot.onText(/^\/clouds_sat(.*)(@\w+)?$/, async (msg, match) => {
-    const chatId = msg.chat.id;
+	isUserAdmin(msg, bot).then(confirmed => {
+		const chatId = msg.chat.id;
 
-    let place = match[1];
+		let place = match[1];
 
-    /**
-     * Remove bot's name
-     */
-    if (place.indexOf('@') !== -1) {
-        place = place.substring(0, place.indexOf('@'));
-    }
+		/**
+		 * Remove bot's name
+		 */
+		if (place.indexOf('@') !== -1) {
+			place = place.substring(0, place.indexOf('@'));
+		}
 
-    /**
-     * Remove _
-     * @type {string}
-     */
-    place = place.substring(place.indexOf("_") + 1);
+		/**
+		 * Remove _
+		 * @type {string}
+		 */
+		place = place.substring(place.indexOf("_") + 1);
 
-    if (place in PLACES) {
-        const gifPath = path.join(__dirname, 'output', `sat_${PLACES[place]}_latest.mp4`);
+		if (place in PLACES) {
+			const gifPath = path.join(__dirname, 'output', `sat_${PLACES[place]}_latest.mp4`);
 
-        if (!fs.existsSync(gifPath)) {
-            const message = `Gif is not ready. Try again in 15 minutes.`;
+			if (!fs.existsSync(gifPath)) {
+				const message = `Gif is not ready. Try again in 15 minutes.`;
 
-            bot.sendChatAction(chatId, 'typing');
-            bot.sendMessage(chatId, message);
-            return;
-        }
+				bot.sendChatAction(chatId, 'typing');
+				bot.sendMessage(chatId, message);
+				return;
+			}
 
-        bot.sendChatAction(chatId, 'upload_video');
-        bot.sendVideo(chatId, gifPath);
-    } else {
-        const message =
-            `Satellite clouds maps for regions:\n` +
-            `\n` +
-            `/clouds_sat_EUROPE\n` +
-            `\n` +
-            `/clouds_sat_LENINGRAD\n` +
-            `\n` +
-            `/clouds_sat_KARELIA\n` +
-            `\n` +
-            `/clouds_sat_MURMANSK\n` +
-            `\n` +
-            `/clouds_sat_PSKOV\n` +
-            `\n` +
-            `/clouds_sat_TVER\n` +
-            `\n` +
-            `/clouds_sat_MOSCOW\n`;
+			bot.sendChatAction(chatId, 'upload_video');
+			bot.sendVideo(chatId, gifPath);
+		} else {
+			const message =
+				`Satellite clouds maps for regions:\n` +
+				`\n` +
+				`/clouds_sat_EUROPE\n` +
+				`\n` +
+				`/clouds_sat_LENINGRAD\n` +
+				`\n` +
+				`/clouds_sat_KARELIA\n` +
+				`\n` +
+				`/clouds_sat_MURMANSK\n` +
+				`\n` +
+				`/clouds_sat_PSKOV\n` +
+				`\n` +
+				`/clouds_sat_TVER\n` +
+				`\n` +
+				`/clouds_sat_MOSCOW\n`;
 
-        bot.sendChatAction(chatId, 'typing');
-        bot.sendMessage(chatId, message);
-    }
+			bot.sendChatAction(chatId, 'typing');
+			bot.sendMessage(chatId, message);
+		}
+	});
 });
 
 bot.onText(/^\/clouds_pre(.*)(@\w+)?$/, async (msg, match) => {
-    const chatId = msg.chat.id;
+    isUserAdmin(msg, bot).then(confirmed => {
+		const chatId = msg.chat.id;
 
-    let place = match[1];
+		let place = match[1];
 
-    /**
-     * Remove bot's name
-     */
-    if (place.indexOf('@') !== -1) {
-        place = place.substring(0, place.indexOf('@'));
-    }
+		/**
+		 * Remove bot's name
+		 */
+		if (place.indexOf('@') !== -1) {
+			place = place.substring(0, place.indexOf('@'));
+		}
 
-    /**
-     * Remove _
-     * @type {string}
-     */
-    place = place.substring(place.indexOf("_") + 1);
+		/**
+		 * Remove _
+		 * @type {string}
+		 */
+		place = place.substring(place.indexOf("_") + 1);
 
-    if (place in PLACES) {
-        const gifPath = path.join(__dirname, 'output', `pre_${PLACES[place]}_latest.mp4`);
+		if (place in PLACES) {
+			const gifPath = path.join(__dirname, 'output', `pre_${PLACES[place]}_latest.mp4`);
 
-        if (!fs.existsSync(gifPath)) {
-            const message = `Gif is not ready. Try again in 15 minutes.`;
+			if (!fs.existsSync(gifPath)) {
+				const message = `Gif is not ready. Try again in 15 minutes.`;
 
-            bot.sendChatAction(chatId, 'typing');
-            bot.sendMessage(chatId, message);
-            return;
-        }
+				bot.sendChatAction(chatId, 'typing');
+				bot.sendMessage(chatId, message);
+				return;
+			}
 
-        bot.sendChatAction(chatId, 'upload_video');
-        bot.sendVideo(chatId, gifPath);
-    } else {
-        const message =
-            `Cloud coverage prediction for regions:\n` +
-            `\n` +
-            `/clouds_pre_EUROPE\n` +
-            `\n` +
-            `/clouds_pre_LENINGRAD\n`+
-            `\n` +
-            `/clouds_pre_KARELIA\n` +
-            `\n` +
-            `/clouds_pre_MURMANSK\n` +
-            `\n` +
-            `/clouds_pre_PSKOV\n` +
-            `\n` +
-            `/clouds_pre_TVER\n` +
-            `\n` +
-            `/clouds_pre_MOSCOW\n` ;
+			bot.sendChatAction(chatId, 'upload_video');
+			bot.sendVideo(chatId, gifPath);
+		} else {
+			const message =
+				`Cloud coverage prediction for regions:\n` +
+				`\n` +
+				`/clouds_pre_EUROPE\n` +
+				`\n` +
+				`/clouds_pre_LENINGRAD\n`+
+				`\n` +
+				`/clouds_pre_KARELIA\n` +
+				`\n` +
+				`/clouds_pre_MURMANSK\n` +
+				`\n` +
+				`/clouds_pre_PSKOV\n` +
+				`\n` +
+				`/clouds_pre_TVER\n` +
+				`\n` +
+				`/clouds_pre_MOSCOW\n` ;
 
-        bot.sendChatAction(chatId, 'typing');
-        bot.sendMessage(chatId, message);
-    }
+			bot.sendChatAction(chatId, 'typing');
+			bot.sendMessage(chatId, message);
+		}
+	});
 });
 
 bot.onText(/^\/clouds_thunder(.*)(@\w+)?$/, async (msg, match) => {
-    const chatId = msg.chat.id;
+    isUserAdmin(msg, bot).then(confirmed => {
+		const chatId = msg.chat.id;
 
-    let place = match[1];
+		let place = match[1];
 
-    /**
-     * Remove bot's name
-     */
-    if (place.indexOf('@') !== -1) {
-        place = place.substring(0, place.indexOf('@'));
-    }
+		/**
+		 * Remove bot's name
+		 */
+		if (place.indexOf('@') !== -1) {
+			place = place.substring(0, place.indexOf('@'));
+		}
 
-    /**
-     * Remove _
-     * @type {string}
-     */
-    place = place.substring(place.indexOf("_") + 1);
+		/**
+		 * Remove _
+		 * @type {string}
+		 */
+		place = place.substring(place.indexOf("_") + 1);
 
-    if (place in PLACES) {
-        const gifPath = path.join(__dirname, 'output', `thunder_${PLACES[place]}_latest.mp4`);
+		if (place in PLACES) {
+			const gifPath = path.join(__dirname, 'output', `thunder_${PLACES[place]}_latest.mp4`);
 
-        if (!fs.existsSync(gifPath)) {
-            const message = `Gif is not ready. Try again in 15 minutes.`;
+			if (!fs.existsSync(gifPath)) {
+				const message = `Gif is not ready. Try again in 15 minutes.`;
 
-            bot.sendChatAction(chatId, 'typing');
-            bot.sendMessage(chatId, message);
-            return;
-        }
+				bot.sendChatAction(chatId, 'typing');
+				bot.sendMessage(chatId, message);
+				return;
+			}
 
-        bot.sendChatAction(chatId, 'upload_video');
-        bot.sendVideo(chatId, gifPath);
-    } else {
-        const message =
-            `Thunderstorms prediction for regions:\n` +
-            `\n` +
-            `/clouds_thunder_EUROPE\n` +
-            `\n` +
-            `/clouds_thunder_LENINGRAD\n`+
-            `\n` +
-            `/clouds_thunder_KARELIA\n` +
-            `\n` +
-            `/clouds_thunder_MURMANSK\n` +
-            `\n` +
-            `/clouds_thunder_PSKOV\n` +
-            `\n` +
-            `/clouds_thunder_TVER\n` +
-            `\n` +
-            `/clouds_thunder_MOSCOW\n` ;
+			bot.sendChatAction(chatId, 'upload_video');
+			bot.sendVideo(chatId, gifPath);
+		} else {
+			const message =
+				`Thunderstorms prediction for regions:\n` +
+				`\n` +
+				`/clouds_thunder_EUROPE\n` +
+				`\n` +
+				`/clouds_thunder_LENINGRAD\n`+
+				`\n` +
+				`/clouds_thunder_KARELIA\n` +
+				`\n` +
+				`/clouds_thunder_MURMANSK\n` +
+				`\n` +
+				`/clouds_thunder_PSKOV\n` +
+				`\n` +
+				`/clouds_thunder_TVER\n` +
+				`\n` +
+				`/clouds_thunder_MOSCOW\n` ;
 
-        bot.sendChatAction(chatId, 'typing');
-        bot.sendMessage(chatId, message);
-    }
+			bot.sendChatAction(chatId, 'typing');
+			bot.sendMessage(chatId, message);
+		}
+	});
 });
 
 const SEND_WITHOUT_DOWNLOAD = !false;
@@ -662,58 +707,60 @@ dataSources.forEach((source) => {
 });
 
 bot.onText(/^\/webcam(@\w+)?$/, (msg, match) => {
-    const chatId = msg.chat.id;
-    let message =
-        `Name a webcam in message or use commands.\n` +
-        `Get all images by /webcam_all command.\n` +
-        `\n`;
+    isUserAdmin(msg, bot).then(confirmed => {
+		const chatId = msg.chat.id;
+		let message =
+			`Name a webcam in message or use commands.\n` +
+			`Get all images by /webcam_all command.\n` +
+			`\n`;
 
-    dataSources.forEach((source, index) => {
-        const command = source.name
-            .replace('ö', 'o')
-            .replace('ä', 'a')
-            .replace('å', 'a')
-            .replace('Å', 'A')
-            .replace('-', '');
+		dataSources.forEach((source, index) => {
+			const command = source.name
+				.replace('ö', 'o')
+				.replace('ä', 'a')
+				.replace('å', 'a')
+				.replace('Å', 'A')
+				.replace('-', '');
 
-        message += `${source.lat}° — /${command} — ${source.name}, ${source.country}\n`;
+			message += `${source.lat}° — /${command} — ${source.name}, ${source.country}\n`;
 
-        try {
-            if (source.country !== dataSources[index + 1].country) {
-                message += '\n';
-            }
-        } catch (e) {}
-    })
+			try {
+				if (source.country !== dataSources[index + 1].country) {
+					message += '\n';
+				}
+			} catch (e) {}
+		})
 
-    bot.sendChatAction(chatId, 'typing');
-    bot.sendMessage(chatId, message);
+		bot.sendChatAction(chatId, 'typing');
+		bot.sendMessage(chatId, message);
+	});	
 });
 
 bot.onText(/^\/webcam_all(@\w+)?$/, (msg, match) => {
-    const chatId = msg.chat.id;
+    isUserAdmin(msg, bot).then(confirmed => {
+		const chatId = msg.chat.id;
 
-    dataSources.forEach((source) => {
-        const chatId = msg.chat.id;
+		dataSources.forEach((source) => {
+			const chatId = msg.chat.id;
 
-        const command = source.name
-            .replace('ö', 'o')
-            .replace('ä', 'a')
-            .replace('å', 'a')
-            .replace('Å', 'A')
-            .replace('-', '');
+			const command = source.name
+				.replace('ö', 'o')
+				.replace('ä', 'a')
+				.replace('å', 'a')
+				.replace('Å', 'A')
+				.replace('-', '');
 
-        const photos = source.data.map((item, index) => {
-            return {
-                type: 'photo',
-                media: `${source.data[index]}?t=${Date.now()}`
-            };
-        })
+			const photos = source.data.map((item, index) => {
+				return {
+					type: 'photo',
+					media: `${source.data[index]}?t=${Date.now()}`
+				};
+			})
 
-        photos[0].caption = `${source.lat}° — ${source.name}, ${source.country} — /${command}`
+			photos[0].caption = `${source.lat}° — ${source.name}, ${source.country} — /${command}`
 
-        bot.sendChatAction(chatId, 'upload_photo');
-        bot.sendMediaGroup(chatId, photos);
-    });
-
-
+			bot.sendChatAction(chatId, 'upload_photo');
+			bot.sendMediaGroup(chatId, photos);
+		});
+	});
 });
