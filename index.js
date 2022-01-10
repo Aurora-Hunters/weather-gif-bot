@@ -494,13 +494,13 @@ const dataSources = [
         lat: 69,
         regexp: /((S|s)kibotn)|((Ш|ш)ибот(н?))|((T|t)roms(ø|o))|((Т|т)ромс(е|ё))/,
         data: [
-            // 'https://fox.phys.uit.no/ASC/BACC5.jpg',
+            'https://fox.phys.uit.no/ASC/BACC5.jpg',
             'https://fox.phys.uit.no/ASC/Latest_ASC01.png',
 
             /**
              * Moved from Ramfjord
              */
-            'https://tromsoe-ai.cei.uec.ac.jp/~nanjo/public/aurora_alert/latest.jpg'
+            // 'https://tromsoe-ai.cei.uec.ac.jp/~nanjo/public/aurora_alert/latest.jpg'
         ]
     },
     // {
@@ -556,7 +556,7 @@ const dataSources = [
         name: 'Hankasalmi',
         country: 'Finland',
         lat: 62,
-        regexp: /((H|h)ankasalmi)|((Х|х)анкасалми)/,
+        regexp: /((H|h)ankasalmi)|((Х|х)анка)/,
         data: [
             'https://www.ursa.fi/yhd/sirius/sivut/kuvat/ImageLastFTP_AllSKY.jpg'
         ]
