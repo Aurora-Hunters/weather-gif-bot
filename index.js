@@ -148,6 +148,9 @@ bot.onText(/(^\/cme_lollipop(@\w+)?$)|((Л|л)еден(е?)ц)/, async (msg, mat
                 try { fs.unlinkSync(video) } catch (e) {}
             })
             .save(`${video}.mp4`);
+    },
+    rejected => {
+        bot.deleteMessage(msg.chat.id, msg.message_id);
     });
 });
 
@@ -174,6 +177,9 @@ bot.onText(/^\/solar(@\w+)?$/, (msg, match) => {
 
         bot.sendChatAction(chatId, 'typing');
         bot.sendMessage(chatId, message);
+    },
+    rejected => {
+        bot.deleteMessage(msg.chat.id, msg.message_id);
     });
 });
 
@@ -188,6 +194,9 @@ bot.onText(/^\/space_weather(@\w+)?$/, (msg, match) => {
 
         bot.sendChatAction(chatId, 'upload_photo');
         bot.sendMediaGroup(chatId, mediaGroup);
+    },
+    rejected => {
+        bot.deleteMessage(msg.chat.id, msg.message_id);
     });
 });
 
@@ -202,6 +211,9 @@ bot.onText(/((Р|р)укопись)|(^\/solar_map(@\w+)?$)/, (msg, match) => {
 
         bot.sendChatAction(chatId, 'upload_photo');
         bot.sendMediaGroup(chatId, mediaGroup);
+    },
+    rejected => {
+        bot.deleteMessage(msg.chat.id, msg.message_id);
     });
 });
 
@@ -219,6 +231,9 @@ bot.onText(/((Т|т)е(з|с)ис)/, async (msg, match) => {
         await bot.sendPhoto(chatId, photo);
 
         if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
+    },
+    rejected => {
+        bot.deleteMessage(msg.chat.id, msg.message_id);
     });
 });
 
@@ -239,6 +254,9 @@ bot.onText(/^\/solar_holes(@\w+)?$/, (msg, match) => {
 
         bot.sendChatAction(chatId, 'upload_photo');
         bot.sendMediaGroup(chatId, mediaGroup);
+    },
+    rejected => {
+        bot.deleteMessage(msg.chat.id, msg.message_id);
     });
 });
 
@@ -274,6 +292,9 @@ bot.onText(/\/graph_all/, (msg, match) => {
 
         bot.sendChatAction(chatId, 'upload_photo');
         bot.sendMediaGroup(chatId, mediaGroup);
+    },
+    rejected => {
+        bot.deleteMessage(msg.chat.id, msg.message_id);
     });
 });
 
@@ -292,6 +313,9 @@ bot.onText(/^\/solar_holes_(\d{4})(@\w+)?$/, (msg, match) => {
 
         bot.sendChatAction(chatId, 'upload_video');
         bot.sendMediaGroup(chatId, mediaGroup);
+    },
+    rejected => {
+        bot.deleteMessage(msg.chat.id, msg.message_id);
     });
 });
 
@@ -311,6 +335,9 @@ bot.onText(/^\/solar_plots(@\w+)?$/, (msg, match) => {
 
         bot.sendChatAction(chatId, 'upload_photo');
         bot.sendMediaGroup(chatId, mediaGroup);
+    },
+    rejected => {
+        bot.deleteMessage(msg.chat.id, msg.message_id);
     });
 });
 
@@ -329,6 +356,9 @@ bot.onText(/^\/solar_plots_(\w{5})(@\w+)?$/, (msg, match) => {
 
         bot.sendChatAction(chatId, 'upload_video');
         bot.sendMediaGroup(chatId, mediaGroup);
+    },
+    rejected => {
+        bot.deleteMessage(msg.chat.id, msg.message_id);
     });
 });
 
@@ -385,6 +415,9 @@ bot.onText(/^\/clouds_sat(.*)(@\w+)?$/, async (msg, match) => {
             bot.sendChatAction(chatId, 'typing');
             bot.sendMessage(chatId, message);
         }
+    },
+    rejected => {
+        bot.deleteMessage(msg.chat.id, msg.message_id);
     });
 });
 
@@ -441,6 +474,9 @@ bot.onText(/^\/clouds_pre(.*)(@\w+)?$/, async (msg, match) => {
             bot.sendChatAction(chatId, 'typing');
             bot.sendMessage(chatId, message);
         }
+    },
+    rejected => {
+        bot.deleteMessage(msg.chat.id, msg.message_id);
     });
 });
 
@@ -497,6 +533,9 @@ bot.onText(/^\/clouds_thunder(.*)(@\w+)?$/, async (msg, match) => {
             bot.sendChatAction(chatId, 'typing');
             bot.sendMessage(chatId, message);
         }
+    },
+    rejected => {
+        bot.deleteMessage(msg.chat.id, msg.message_id);
     });
 });
 
@@ -683,26 +722,31 @@ const dataSources = [
 
 dataSources.forEach((source) => {
     bot.onText(source.regexp, async (msg, match) => {
-        const chatId = msg.chat.id;
+        isUserAdmin(msg, bot).then(confirmed => {
+            const chatId = msg.chat.id;
 
-        const command = source.name
-            .replace('ö', 'o')
-            .replace('ä', 'a')
-            .replace('å', 'a')
-            .replace('Å', 'A')
-            .replace('-', '');
+            const command = source.name
+                .replace('ö', 'o')
+                .replace('ä', 'a')
+                .replace('å', 'a')
+                .replace('Å', 'A')
+                .replace('-', '');
 
-        const photos = source.data.map((item, index) => {
-            return {
-                type: 'photo',
-                media: `${source.data[index]}?t=${Date.now()}`
-            };
-        })
+            const photos = source.data.map((item, index) => {
+                return {
+                    type: 'photo',
+                    media: `${source.data[index]}?t=${Date.now()}`
+                };
+            })
 
-        photos[0].caption = `${source.lat}° — ${source.name}, ${source.country} — /${command}`
+            photos[0].caption = `${source.lat}° — ${source.name}, ${source.country} — /${command}`
 
-        bot.sendChatAction(chatId, 'upload_photo');
-        bot.sendMediaGroup(chatId, photos);
+            bot.sendChatAction(chatId, 'upload_photo');
+            bot.sendMediaGroup(chatId, photos);
+        },
+        rejected => {
+            bot.deleteMessage(msg.chat.id, msg.message_id);
+        }); 
     });
 });
 
@@ -733,6 +777,11 @@ bot.onText(/^\/webcam(@\w+)?$/, (msg, match) => {
 
         bot.sendChatAction(chatId, 'typing');
         bot.sendMessage(chatId, message);
+    },
+    rejected => {
+        //temporarly removed because any chat user can type something like "I was in Kiruna" and this kind of message should not be deleted.
+        //TODO: change regex to always start with "/" OR add once-per-minute limit for response.
+        //bot.deleteMessage(msg.chat.id, msg.message_id);
     });
 });
 
@@ -741,8 +790,6 @@ bot.onText(/^\/webcam_all(@\w+)?$/, (msg, match) => {
         const chatId = msg.chat.id;
 
         dataSources.forEach((source) => {
-            const chatId = msg.chat.id;
-
             const command = source.name
                 .replace('ö', 'o')
                 .replace('ä', 'a')
@@ -762,5 +809,8 @@ bot.onText(/^\/webcam_all(@\w+)?$/, (msg, match) => {
             bot.sendChatAction(chatId, 'upload_photo');
             bot.sendMediaGroup(chatId, photos);
         });
+    },
+    rejected => {
+        bot.deleteMessage(msg.chat.id, msg.message_id);
     });
 });
