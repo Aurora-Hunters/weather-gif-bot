@@ -465,7 +465,7 @@ const dataSources = [
         name: 'Longyearbyen',
         country: 'Norway',
         lat: 79,
-        regexp: /((L|l)ongyearbyen)|((Л|л)онг)/,
+        regexp: /((L|l)ongyearbyen)/,
         data: [
             'http://kho.unis.no/Quicklooks/ZWO/Allsky.jpg'
         ]
@@ -574,7 +574,7 @@ const dataSources = [
         name: 'Pori',
         country: 'Finland',
         lat: 61,
-        regexp: /((P|p)ori)|((П|п)ори)/,
+        regexp: /((P|p)ori)/,
         data: [
             'https://karhunvartijat.fi/allsky/images/image-resize.jpg'
         ]
