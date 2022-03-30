@@ -795,32 +795,42 @@ bot.onText(/^\/webcam_all(@\w+)?$/, async (msg, match) => {
 
     const chatId = msg.chat.id;
     const photos = [];
+    let message = `Available webcams sorted by latitude\n\n`;
 
     bot.sendChatAction(chatId, 'upload_photo');
 
-    dataSources.forEach((source) => {
-        const command = source.name
-            .replace('ö', 'o')
-            .replace('ä', 'a')
-            .replace('å', 'a')
-            .replace('Å', 'A')
-            .replace('-', '');
-
-        source.data.forEach((item, index) => {
-            photos.push({
-                type: 'photo',
-                media: `${source.data[index]}?t=${Date.now()}`
-            });
+    dataSources
+        .sort((place1, place2) => {
+            if ( place1.lat < place2.lat ) {
+                return 1;
+            }
+            if ( place1.lat > place2.lat ) {
+                return -1;
+            }
+            return 0;
         })
+       .forEach((source) => {
+            const command = source.name
+                .replace('ö', 'o')
+                .replace('ä', 'a')
+                .replace('å', 'a')
+                .replace('Å', 'A')
+                .replace('-', '');
 
-        // photos[0].caption = `${source.lat}° — ${source.name}, ${source.country} — /${command}`
+            source.data
+                .forEach((item, index) => {
+                    photos.push({
+                        type: 'photo',
+                        media: `${source.data[index]}?t=${Date.now()}`
+                    });
+                })
 
-        // bot.sendChatAction(chatId, 'upload_photo');
-        // bot.sendMediaGroup(chatId, photos);
-    });
+            message += `${source.lat}° — ${source.name}, ${source.country} — /${command}\n`;
+        });
 
-    console.log('photos', photos);
+    message += `\nUse /webcam_all to get this message again`;
 
-    // bot.sendChatAction(chatId, 'upload_photo');
+    photos[0].caption = message;
+
     await bot.sendMediaGroup(chatId, photos);
 });
