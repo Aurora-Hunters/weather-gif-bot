@@ -552,15 +552,15 @@ const dataSources = [
     /**
      * Norway
      */
-    {
-        name: 'Longyearbyen',
-        country: 'Norway',
-        lat: 79,
-        regexp: /((L|l)ongyearbyen)/,
-        data: [
-            'http://kho.unis.no/Quicklooks/ZWO/Allsky.jpg'
-        ]
-    },
+    // {
+    //     name: 'Longyearbyen',
+    //     country: 'Norway',
+    //     lat: 79,
+    //     regexp: /((L|l)ongyearbyen)/,
+    //     data: [
+    //         'http://kho.unis.no/Quicklooks/ZWO/Allsky.jpg'
+    //     ]
+    // },
     {
         name: 'Svalbard',
         country: 'Norway',
@@ -586,7 +586,7 @@ const dataSources = [
         regexp: /((S|s)kibotn)|((Ш|ш)ибот(н?))|((T|t)roms(ø|o))|((Т|т)ромс(е|ё))/,
         data: [
             'https://fox.phys.uit.no/ASC/BACC5.jpg',
-            'https://fox.phys.uit.no/ASC/Latest_ASC01.png',
+            // 'https://fox.phys.uit.no/ASC/Latest_ASC01.png',
 
             /**
              * Moved from Ramfjord
@@ -616,15 +616,15 @@ const dataSources = [
             'https://space.fmi.fi/MIRACLE/ASC/ASC_keograms/tmp_KEV_keo/Allsky_KEVO.jpg'
         ]
     },
-    {
-        name: 'Muonio',
-        country: 'Finland',
-        lat: 68,
-        regexp: /((M|m)uonio)|((М|м)уонио)/,
-        data: [
-            'https://aurorasnow.fmi.fi/public_service/images/latest_MUO.jpg'
-        ]
-    },
+    // {
+    //     name: 'Muonio',
+    //     country: 'Finland',
+    //     lat: 68,
+    //     regexp: /((M|m)uonio)|((М|м)уонио)/,
+    //     data: [
+    //         'https://aurorasnow.fmi.fi/public_service/images/latest_MUO.jpg'
+    //     ]
+    // },
     {
         name: 'Sodankylä',
         country: 'Finland',
@@ -634,15 +634,15 @@ const dataSources = [
             'https://www.sgo.fi/Data/RealTime/Kuvat/UCL.jpg'
         ]
     },
-    {
-        name: 'Nyrölä',
-        country: 'Finland',
-        lat: 62,
-        regexp: /((N|n)yr(ö|o)l(ä|a))|((Н|н)юрол(а|я))/,
-        data: [
-            'http://nyrola.jklsirius.fi/allsky/image-resize.jpg'
-        ]
-    },
+    // {
+    //     name: 'Nyrölä',
+    //     country: 'Finland',
+    //     lat: 62,
+    //     regexp: /((N|n)yr(ö|o)l(ä|a))|((Н|н)юрол(а|я))/,
+    //     data: [
+    //         'http://nyrola.jklsirius.fi/allsky/image-resize.jpg'
+    //     ]
+    // },
     {
         name: 'Hankasalmi',
         country: 'Finland',
@@ -670,15 +670,15 @@ const dataSources = [
             'https://karhunvartijat.fi/allsky/images/image-resize.jpg'
         ]
     },
-    {
-        name: 'Metsähovi',
-        country: 'Finland',
-        lat: 60,
-        regexp: /((M|m)ets(ä|a)hovi)|((М|м)етсахови)/,
-        data: [
-            'https://space.fmi.fi/MIRACLE/RWC/latest_HOV.jpg'
-        ]
-    },
+    // {
+    //     name: 'Metsähovi',
+    //     country: 'Finland',
+    //     lat: 60,
+    //     regexp: /((M|m)ets(ä|a)hovi)|((М|м)етсахови)/,
+    //     data: [
+    //         'https://space.fmi.fi/MIRACLE/RWC/latest_HOV.jpg'
+    //     ]
+    // },
 
     /**
      * Sweden
@@ -794,10 +794,11 @@ bot.onText(/^\/webcam_all(@\w+)?$/, async (msg, match) => {
     if (await doesBotNeedToIgnoreMessage(msg, true)) return;
 
     const chatId = msg.chat.id;
+    const photos = [];
+
+    bot.sendChatAction(chatId, 'upload_photo');
 
     dataSources.forEach((source) => {
-        const chatId = msg.chat.id;
-
         const command = source.name
             .replace('ö', 'o')
             .replace('ä', 'a')
@@ -805,16 +806,21 @@ bot.onText(/^\/webcam_all(@\w+)?$/, async (msg, match) => {
             .replace('Å', 'A')
             .replace('-', '');
 
-        const photos = source.data.map((item, index) => {
-            return {
+        source.data.forEach((item, index) => {
+            photos.push({
                 type: 'photo',
                 media: `${source.data[index]}?t=${Date.now()}`
-            };
+            });
         })
 
-        photos[0].caption = `${source.lat}° — ${source.name}, ${source.country} — /${command}`
+        // photos[0].caption = `${source.lat}° — ${source.name}, ${source.country} — /${command}`
 
-        bot.sendChatAction(chatId, 'upload_photo');
-        bot.sendMediaGroup(chatId, photos);
+        // bot.sendChatAction(chatId, 'upload_photo');
+        // bot.sendMediaGroup(chatId, photos);
     });
+
+    console.log('photos', photos);
+
+    // bot.sendChatAction(chatId, 'upload_photo');
+    await bot.sendMediaGroup(chatId, photos);
 });
