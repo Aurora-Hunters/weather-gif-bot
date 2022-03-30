@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const TelegramBot = require('node-telegram-bot-api');
 const bot = new TelegramBot(process.env.BOT_TOKEN, {polling: true});
+let botInfo = {};
 
 const createSatelliteGif = require('./src/index_sat');
 const createCloudsGif = require('./src/index_pre');
@@ -36,13 +37,18 @@ const SOLAR_PLOTS = [
 
 bot.on('polling_error', function(error){ console.log(error); });
 
-bot.on('message', (msg) => {
+bot.on('message', async (msg) => {
     console.log(msg);
 });
 
 const cron = require('node-cron');
 
+/**
+ * First set up
+ */
 (async () => {
+    botInfo = await bot.getMe();
+
     for (const [name, code] of Object.entries(PLACES)) {
         await createThundersGif(code);
         await createSatelliteGif(code);
@@ -62,7 +68,64 @@ const sendPhotos = (listOfImageSources) => {
 
 }
 
-bot.onText(/\/start/, (msg, match) => {
+/**
+ * Check if we need to remove and ignore user's message
+ *
+ * Returns false if message
+ */
+const doesBotNeedToIgnoreMessage = async (msg, needToRemoveMessage = false) => {
+    /**
+     * Allow to use in private messages
+     */
+    if (['private'].includes(msg.chat.type)) return;
+
+    /**
+     * if bot has admin rights then
+     * - allow messages only from admins
+     * - remove all other messages
+     *
+     * if bot is a user in a group then it should process everything
+     */
+    if (['group', 'supergroup'].includes(msg.chat.type)) {
+        const adminsList = await bot.getChatAdministrators(msg.chat.id);
+        const adminIds = adminsList.map(admin => {
+            return admin.user.id;
+        })
+
+        /**
+         * Check if bot is admin
+         */
+        if (adminIds.includes(botInfo.id)) {
+            /**
+             * If the message from an admin then ok
+             */
+            if (adminIds.includes(msg.from.id)) {
+                return;
+            }
+
+            /**
+             * If the message from the regular user then check
+             * to remove it and then do nothing
+             */
+            if (needToRemoveMessage) {
+                await bot.deleteMessage(msg.chat.id, msg.message_id);
+            }
+
+            /**
+             * Skip message processing
+             */
+            return true;
+        }
+    }
+
+    /**
+     * Allow to process message
+     */
+}
+
+bot.onText(/\/start/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
     const chatId = msg.chat.id;
     const message =
         `Hello. I can show you weather data from satellites and cloud coverage prediction.\n` +
@@ -76,7 +139,9 @@ bot.onText(/\/start/, (msg, match) => {
     bot.sendMessage(chatId, message);
 });
 
-bot.onText(/^\/commands(@\w+)?$/, (msg, match) => {
+bot.onText(/^\/commands(@\w+)?$/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
     const chatId = msg.chat.id;
     let message =
         `/start\n` +
@@ -102,7 +167,9 @@ bot.onText(/^\/commands(@\w+)?$/, (msg, match) => {
     bot.sendMessage(chatId, message);
 });
 
-bot.onText(/(^\/cme_lollipop(@\w+)?$)|((Л|л)еден(е?)ц)/, async (msg, match) => {
+bot.onText(/(^\/cme_lollipop(@\w+)?$)|((Л|л)еденец)/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
     const chatId = msg.chat.id;
 
     let video = `https://iswa.gsfc.nasa.gov/IswaSystemWebApp/iSWACygnetStreamer?timestamp=2038-01-23+00%3A44%3A00&window=-1&cygnetId=261&t=${Date.now()}`;
@@ -130,7 +197,9 @@ bot.onText(/(^\/cme_lollipop(@\w+)?$)|((Л|л)еден(е?)ц)/, async (msg, mat
         .save(`${video}.mp4`);
 });
 
-bot.onText(/^\/solar(@\w+)?$/, (msg, match) => {
+bot.onText(/^\/solar(@\w+)?$/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
     const chatId = msg.chat.id;
     let message =
         `/space_weather — X-Ray Flux, Proton Flux, Geomagnetic activity\n` +
@@ -154,7 +223,9 @@ bot.onText(/^\/solar(@\w+)?$/, (msg, match) => {
     bot.sendMessage(chatId, message);
 });
 
-bot.onText(/^\/space_weather(@\w+)?$/, (msg, match) => {
+bot.onText(/^\/space_weather(@\w+)?$/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
     const chatId = msg.chat.id;
 
     const mediaGroup = [{
@@ -166,7 +237,9 @@ bot.onText(/^\/space_weather(@\w+)?$/, (msg, match) => {
     bot.sendMediaGroup(chatId, mediaGroup);
 });
 
-bot.onText(/((Р|р)укопись)|(^\/solar_map(@\w+)?$)/, (msg, match) => {
+bot.onText(/((Р|р)укопись)|(^\/solar_map(@\w+)?$)/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
     const chatId = msg.chat.id;
 
     const mediaGroup = [{
@@ -179,6 +252,8 @@ bot.onText(/((Р|р)укопись)|(^\/solar_map(@\w+)?$)/, (msg, match) => {
 });
 
 bot.onText(/((Т|т)е(з|с)ис)/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg)) return;
+
     const chatId = msg.chat.id;
 
     let photo = `https://tesis.lebedev.ru/upload_test/files/fc.png?t=${Date.now()}`;
@@ -194,7 +269,9 @@ bot.onText(/((Т|т)е(з|с)ис)/, async (msg, match) => {
 });
 
 
-bot.onText(/^\/solar_holes(@\w+)?$/, (msg, match) => {
+bot.onText(/^\/solar_holes(@\w+)?$/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
     const chatId = msg.chat.id;
     const size = 1024;
 
@@ -211,7 +288,9 @@ bot.onText(/^\/solar_holes(@\w+)?$/, (msg, match) => {
     bot.sendMediaGroup(chatId, mediaGroup);
 });
 
-bot.onText(/\/graph_all/, (msg, match) => {
+bot.onText(/\/graph_all/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
     const chatId = msg.chat.id;
     const mediaGroup = [];
     const GRAPHS = [
@@ -244,7 +323,9 @@ bot.onText(/\/graph_all/, (msg, match) => {
     bot.sendMediaGroup(chatId, mediaGroup);
 });
 
-bot.onText(/^\/solar_holes_(\d{4})(@\w+)?$/, (msg, match) => {
+bot.onText(/^\/solar_holes_(\d{4})(@\w+)?$/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
     const chatId = msg.chat.id;
     const element = match[1];
     const mediaGroup = [];
@@ -260,7 +341,9 @@ bot.onText(/^\/solar_holes_(\d{4})(@\w+)?$/, (msg, match) => {
     bot.sendMediaGroup(chatId, mediaGroup);
 });
 
-bot.onText(/^\/solar_plots(@\w+)?$/, (msg, match) => {
+bot.onText(/^\/solar_plots(@\w+)?$/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
     const chatId = msg.chat.id;
     const size = 1024;
 
@@ -277,7 +360,9 @@ bot.onText(/^\/solar_plots(@\w+)?$/, (msg, match) => {
     bot.sendMediaGroup(chatId, mediaGroup);
 });
 
-bot.onText(/^\/solar_plots_(\w{5})(@\w+)?$/, (msg, match) => {
+bot.onText(/^\/solar_plots_(\w{5})(@\w+)?$/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
     const chatId = msg.chat.id;
     const element = match[1];
     const mediaGroup = [];
@@ -294,6 +379,8 @@ bot.onText(/^\/solar_plots_(\w{5})(@\w+)?$/, (msg, match) => {
 });
 
 bot.onText(/^\/clouds_sat(.*)(@\w+)?$/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
     const chatId = msg.chat.id;
 
     let place = match[1];
@@ -348,6 +435,8 @@ bot.onText(/^\/clouds_sat(.*)(@\w+)?$/, async (msg, match) => {
 });
 
 bot.onText(/^\/clouds_pre(.*)(@\w+)?$/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
     const chatId = msg.chat.id;
 
     let place = match[1];
@@ -402,6 +491,8 @@ bot.onText(/^\/clouds_pre(.*)(@\w+)?$/, async (msg, match) => {
 });
 
 bot.onText(/^\/clouds_thunder(.*)(@\w+)?$/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
     const chatId = msg.chat.id;
 
     let place = match[1];
@@ -638,6 +729,14 @@ const dataSources = [
 
 dataSources.forEach((source) => {
     bot.onText(source.regexp, async (msg, match) => {
+        let calledByCommand = false;
+
+        try {
+            if (match.input[0] === '/') calledByCommand = true;
+        } catch (e) {}
+
+        if (await doesBotNeedToIgnoreMessage(msg, calledByCommand)) return;
+
         const chatId = msg.chat.id;
 
         const command = source.name
@@ -661,7 +760,9 @@ dataSources.forEach((source) => {
     });
 });
 
-bot.onText(/^\/webcam(@\w+)?$/, (msg, match) => {
+bot.onText(/^\/webcam(@\w+)?$/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
     const chatId = msg.chat.id;
     let message =
         `Name a webcam in message or use commands.\n` +
@@ -689,7 +790,9 @@ bot.onText(/^\/webcam(@\w+)?$/, (msg, match) => {
     bot.sendMessage(chatId, message);
 });
 
-bot.onText(/^\/webcam_all(@\w+)?$/, (msg, match) => {
+bot.onText(/^\/webcam_all(@\w+)?$/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
     const chatId = msg.chat.id;
 
     dataSources.forEach((source) => {
@@ -714,6 +817,4 @@ bot.onText(/^\/webcam_all(@\w+)?$/, (msg, match) => {
         bot.sendChatAction(chatId, 'upload_photo');
         bot.sendMediaGroup(chatId, photos);
     });
-
-
 });
