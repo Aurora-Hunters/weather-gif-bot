@@ -670,15 +670,15 @@ const dataSources = [
             'https://karhunvartijat.fi/allsky/images/image-resize.jpg'
         ]
     },
-    // {
-    //     name: 'Metsähovi',
-    //     country: 'Finland',
-    //     lat: 60,
-    //     regexp: /((M|m)ets(ä|a)hovi)|((М|м)етсахови)/,
-    //     data: [
-    //         'https://space.fmi.fi/MIRACLE/RWC/latest_HOV.jpg'
-    //     ]
-    // },
+    {
+        name: 'Metsähovi',
+        country: 'Finland',
+        lat: 60,
+        regexp: /((M|m)ets(ä|a)hovi)|((М|м)етсахови)/,
+        data: [
+            'https://space.fmi.fi/MIRACLE/RWC/latest_HOV.jpg'
+        ]
+    },
 
     /**
      * Sweden
@@ -700,7 +700,7 @@ const dataSources = [
         data: [
             'https://uk.jokkmokk.jp/photo/nr4/latest.jpg',
             'https://uk.jokkmokk.jp/photo/nr3/latest.jpg',
-            // 'https://uk.jokkmokk.jp/photo/nr5/latest.jpg'
+            'https://uk.jokkmokk.jp/photo/nr5/latest.jpg'
         ]
     },
 
