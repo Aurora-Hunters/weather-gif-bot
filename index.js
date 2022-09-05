@@ -561,15 +561,15 @@ const dataSources = [
     //         'http://kho.unis.no/Quicklooks/ZWO/Allsky.jpg'
     //     ]
     // },
-    {
-        name: 'Svalbard',
-        country: 'Norway',
-        lat: 78,
-        regexp: /((S|s)valbard)|((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман(т|д))/,
-        data: [
-            'http://kho.unis.no/Quicklooks/kho_sony.png'
-        ]
-    },
+    // {
+    //     name: 'Svalbard',
+    //     country: 'Norway',
+    //     lat: 78,
+    //     regexp: /((S|s)valbard)|((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман(т|д))/,
+    //     data: [
+    //         'http://kho.unis.no/Quicklooks/kho_sony.png'
+    //     ]
+    // },
     // {
     //     name: 'Ny-Ålesund',
     //     country: 'Norway',
@@ -579,21 +579,21 @@ const dataSources = [
     //         'http://193.156.10.139/Allsky.jpg'
     //     ]
     // },
-    {
-        name: 'Skibotn',
-        country: 'Norway',
-        lat: 69,
-        regexp: /((S|s)kibotn)|((Ш|ш)ибот(н?))|((T|t)roms(ø|o))|((Т|т)ромс(е|ё))/,
-        data: [
-            'https://fox.phys.uit.no/ASC/BACC5.jpg',
-            // 'https://fox.phys.uit.no/ASC/Latest_ASC01.png',
-
-            /**
-             * Moved from Ramfjord
-             */
-            // 'https://tromsoe-ai.cei.uec.ac.jp/~nanjo/public/aurora_alert/latest.jpg'
-        ]
-    },
+    // {
+    //     name: 'Skibotn',
+    //     country: 'Norway',
+    //     lat: 69,
+    //     regexp: /((S|s)kibotn)|((Ш|ш)ибот(н?))|((T|t)roms(ø|o))|((Т|т)ромс(е|ё))/,
+    //     data: [
+    //         'https://fox.phys.uit.no/ASC/BACC5.jpg',
+    //         // 'https://fox.phys.uit.no/ASC/Latest_ASC01.png',
+    //
+    //         /**
+    //          * Moved from Ramfjord
+    //          */
+    //         // 'https://tromsoe-ai.cei.uec.ac.jp/~nanjo/public/aurora_alert/latest.jpg'
+    //     ]
+    // },
     // {
     //     name: 'Ramfjord',
     //     country: 'Norway',
@@ -607,15 +607,15 @@ const dataSources = [
     /**
      * Finland
      */
-    {
-        name: 'Kevo',
-        country: 'Finland',
-        lat: 69,
-        regexp: /((K|k)evo)|((К|к)ево)/,
-        data: [
-            'https://space.fmi.fi/MIRACLE/ASC/ASC_keograms/tmp_KEV_keo/Allsky_KEVO.jpg'
-        ]
-    },
+    // {
+    //     name: 'Kevo',
+    //     country: 'Finland',
+    //     lat: 69,
+    //     regexp: /((K|k)evo)|((К|к)ево)/,
+    //     data: [
+    //         'https://space.fmi.fi/MIRACLE/ASC/ASC_keograms/tmp_KEV_keo/Allsky_KEVO.jpg'
+    //     ]
+    // },
     // {
     //     name: 'Muonio',
     //     country: 'Finland',
@@ -634,15 +634,15 @@ const dataSources = [
             'https://www.sgo.fi/Data/RealTime/Kuvat/UCL.jpg'
         ]
     },
-    // {
-    //     name: 'Nyrölä',
-    //     country: 'Finland',
-    //     lat: 62,
-    //     regexp: /((N|n)yr(ö|o)l(ä|a))|((Н|н)юрол(а|я))/,
-    //     data: [
-    //         'http://nyrola.jklsirius.fi/allsky/image-resize.jpg'
-    //     ]
-    // },
+    {
+        name: 'Nyrölä',
+        country: 'Finland',
+        lat: 62,
+        regexp: /((N|n)yr(ö|o)l(ä|a))|((Н|н)юрол(а|я))/,
+        data: [
+            'http://nyrola.jklsirius.fi/allsky/image-resize.jpg'
+        ]
+    },
     {
         name: 'Hankasalmi',
         country: 'Finland',
@@ -652,15 +652,15 @@ const dataSources = [
             'https://www.ursa.fi/yhd/sirius/sivut/kuvat/ImageLastFTP_AllSKY.jpg'
         ]
     },
-    {
-        name: 'Tampere',
-        country: 'Finland',
-        lat: 61,
-        regexp: /((T|t)ampere)|((Т|т)ампере)/,
-        data: [
-            'https://www.ursa.fi/yhd/tampereenursa/Pics/latest_CAM-20.jpg'
-        ]
-    },
+    // {
+    //     name: 'Tampere',
+    //     country: 'Finland',
+    //     lat: 61,
+    //     regexp: /((T|t)ampere)|((Т|т)ампере)/,
+    //     data: [
+    //         'https://www.ursa.fi/yhd/tampereenursa/Pics/latest_CAM-20.jpg'
+    //     ]
+    // },
     {
         name: 'Pori',
         country: 'Finland',
