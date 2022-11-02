@@ -108,7 +108,11 @@ const doesBotNeedToIgnoreMessage = async (msg, needToRemoveMessage = false) => {
              * to remove it and then do nothing
              */
             if (needToRemoveMessage) {
-                await bot.deleteMessage(msg.chat.id, msg.message_id);
+                try {
+                  await bot.deleteMessage(msg.chat.id, msg.message_id);
+                } catch (e) {
+                  console.log(e);
+                }
             }
 
             /**
