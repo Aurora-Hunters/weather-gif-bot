@@ -323,8 +323,14 @@ bot.onText(/\/graph_all/, async (msg, match) => {
         })
     })
 
+    const options = {};
+
+    if (msg.is_topic_message) {
+        options.message_thread_id = msg.message_thread_id
+    }
+
     bot.sendChatAction(chatId, 'upload_photo');
-    bot.sendMediaGroup(chatId, mediaGroup);
+    bot.sendMediaGroup(chatId, mediaGroup, options);
 });
 
 bot.onText(/^\/solar_holes_(\d{4})(@\w+)?$/, async (msg, match) => {
