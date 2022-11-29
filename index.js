@@ -641,15 +641,15 @@ const dataSources = [
     //         'http://kho.unis.no/Quicklooks/ZWO/Allsky.jpg'
     //     ]
     // },
-    // {
-    //     name: 'Svalbard',
-    //     country: 'Norway',
-    //     lat: 78,
-    //     regexp: /((S|s)valbard)|((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман(т|д))/,
-    //     data: [
-    //         'http://kho.unis.no/Quicklooks/kho_sony.png'
-    //     ]
-    // },
+    {
+        name: 'Svalbard',
+        country: 'Norway',
+        lat: 78,
+        regexp: /((S|s)valbard)|((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман(т|д))/,
+        data: [
+            'http://kho.unis.no/Quicklooks/kho_sony.png'
+        ]
+    },
     // {
     //     name: 'Ny-Ålesund',
     //     country: 'Norway',
@@ -736,15 +736,15 @@ const dataSources = [
             'https://karhunvartijat.fi/allsky/images/image-resize.jpg'
         ]
     },
-    {
-        name: 'Metsähovi',
-        country: 'Finland',
-        lat: 60,
-        regexp: /((M|m)ets(ä|a)hovi)|((М|м)етсахови)/,
-        data: [
-            'https://space.fmi.fi/MIRACLE/RWC/latest_HOV.jpg'
-        ]
-    },
+    // {
+    //     name: 'Metsähovi',
+    //     country: 'Finland',
+    //     lat: 60,
+    //     regexp: /((M|m)ets(ä|a)hovi)|((М|м)етсахови)/,
+    //     data: [
+    //         'https://space.fmi.fi/MIRACLE/RWC/latest_HOV.jpg'
+    //     ]
+    // },
 
     /**
      * Sweden
