@@ -659,16 +659,16 @@ const dataSources = [
     //         'http://193.156.10.139/Allsky.jpg'
     //     ]
     // },
-    // {
-    //     name: 'Skibotn',
-    //     country: 'Norway',
-    //     lat: 69,
-    //     regexp: /((S|s)kibotn)|((Ш|ш)ибот(н?))|((T|t)roms(ø|o))|((Т|т)ромс(е|ё))/,
-    //     data: [
-    //         'https://fox.phys.uit.no/ASC/BACC5.jpg',
-    //         // 'https://fox.phys.uit.no/ASC/Latest_ASC01.png',
-    //     ]
-    // },
+    {
+        name: 'Skibotn',
+        country: 'Norway',
+        lat: 69,
+        regexp: /((S|s)kibotn)|((Ш|ш)ибот(н?))|((T|t)roms(ø|o))|((Т|т)ромс(е|ё))/,
+        data: [
+            'https://fox.phys.uit.no/ASC/BACC5.jpg',
+            // 'https://fox.phys.uit.no/ASC/Latest_ASC01.png',
+        ]
+    },
 
     /**
      * Finland
