@@ -641,15 +641,15 @@ const dataSources = [
     //         'http://kho.unis.no/Quicklooks/ZWO/Allsky.jpg'
     //     ]
     // },
-    // {
-    //     name: 'Svalbard',
-    //     country: 'Norway',
-    //     lat: 78,
-    //     regexp: /((S|s)valbard)|((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман(т|д))/,
-    //     data: [
-    //         'http://kho.unis.no/Quicklooks/kho_sony.png'
-    //     ]
-    // },
+    {
+        name: 'Svalbard',
+        country: 'Norway',
+        lat: 78,
+        regexp: /((S|s)valbard)|((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман(т|д))/,
+        data: [
+            'http://kho.unis.no/Quicklooks/kho_sony.png'
+        ]
+    },
     // {
     //     name: 'Ny-Ålesund',
     //     country: 'Norway',
@@ -659,21 +659,21 @@ const dataSources = [
     //         'http://193.156.10.139/Allsky.jpg'
     //     ]
     // },
-    // {
-    //     name: 'Skibotn',
-    //     country: 'Norway',
-    //     lat: 69,
-    //     regexp: /((S|s)kibotn)|((Ш|ш)ибот(н?))|((T|t)roms(ø|o))|((Т|т)ромс(е|ё))/,
-    //     data: [
-    //         'https://fox.phys.uit.no/ASC/BACC5.jpg',
-    //         // 'https://fox.phys.uit.no/ASC/Latest_ASC01.png',
-    //
-    //         /**
-    //          * Moved from Ramfjord
-    //          */
-    //         // 'https://tromsoe-ai.cei.uec.ac.jp/~nanjo/public/aurora_alert/latest.jpg'
-    //     ]
-    // },
+    {
+        name: 'Skibotn',
+        country: 'Norway',
+        lat: 69,
+        regexp: /((S|s)kibotn)|((Ш|ш)ибот(н?))|((T|t)roms(ø|o))|((Т|т)ромс(е|ё))/,
+        data: [
+            'https://fox.phys.uit.no/ASC/BACC5.jpg',
+            // 'https://fox.phys.uit.no/ASC/Latest_ASC01.png',
+    
+            /**
+             * Moved from Ramfjord
+             */
+            // 'https://tromsoe-ai.cei.uec.ac.jp/~nanjo/public/aurora_alert/latest.jpg'
+        ]
+    },
     // {
     //     name: 'Ramfjord',
     //     country: 'Norway',
