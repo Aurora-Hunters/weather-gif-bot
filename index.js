@@ -641,15 +641,15 @@ const dataSources = [
     //         'http://kho.unis.no/Quicklooks/ZWO/Allsky.jpg'
     //     ]
     // },
-    {
-        name: 'Svalbard',
-        country: 'Norway',
-        lat: 78,
-        regexp: /((S|s)valbard)|((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман(т|д))/,
-        data: [
-            'http://kho.unis.no/Quicklooks/kho_sony.png'
-        ]
-    },
+    // {
+    //     name: 'Svalbard',
+    //     country: 'Norway',
+    //     lat: 78,
+    //     regexp: /((S|s)valbard)|((Ш|ш)пиц)|((С|с)вал(ь?)бар(т|д))|((Г|г)руман(т|д))/,
+    //     data: [
+    //         'http://kho.unis.no/Quicklooks/kho_sony.png'
+    //     ]
+    // },
     // {
     //     name: 'Ny-Ålesund',
     //     country: 'Norway',
@@ -718,15 +718,15 @@ const dataSources = [
             'https://www.ursa.fi/yhd/sirius/sivut/kuvat/ImageLastFTP_AllSKY.jpg'
         ]
     },
-    // {
-    //     name: 'Tampere',
-    //     country: 'Finland',
-    //     lat: 61,
-    //     regexp: /((T|t)ampere)|((Т|т)ампере)/,
-    //     data: [
-    //         'https://www.ursa.fi/yhd/tampereenursa/Pics/latest_CAM-20.jpg'
-    //     ]
-    // },
+    {
+        name: 'Tampere',
+        country: 'Finland',
+        lat: 61,
+        regexp: /((T|t)ampere)|((Т|т)ампере)/,
+        data: [
+            'https://www.ursa.fi/yhd/tampereenursa/Pics/latest_CAM-20.jpg'
+        ]
+    },
     {
         name: 'Pori',
         country: 'Finland',
