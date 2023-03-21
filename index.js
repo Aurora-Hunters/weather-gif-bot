@@ -142,7 +142,7 @@ bot.onText(/\/start/, async (msg, match) => {
     const options = {};
     if (msg.is_topic_message) {
         options.message_thread_id = msg.message_thread_id
-    }    
+    }
 
     bot.sendChatAction(chatId, 'typing');
     bot.sendMessage(chatId, message, options);
@@ -291,7 +291,7 @@ bot.onText(/((Т|т)е(з|с)ис)/, async (msg, match) => {
 
     const chatId = msg.chat.id;
 
-    let photo = `https://tesis.lebedev.ru/upload_test/files/fc.png?t=${Date.now()}`;
+    let photo = `https://tesis.xras.ru/upload_test/files/fc.png?t=${Date.now()}`;
 
     if (!SEND_WITHOUT_DOWNLOAD) {
         photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
