@@ -373,6 +373,25 @@ bot.onText(/\/graph_all/, async (msg, match) => {
     bot.sendMediaGroup(chatId, mediaGroup, options);
 });
 
+bot.onText(/^\/magnetometers?$/, async (msg, match) => {
+    if (await doesBotNeedToIgnoreMessage(msg, true)) return;
+
+    const chatId = msg.chat.id;
+
+    const mediaGroup = [{
+        type: 'photo',
+        media: `https://www.spaceweatherlive.com/images/magnetometers/mkstackplot.gif?${Date.now()}`
+    }];
+
+    const options = {};
+    if (msg.is_topic_message) {
+        options.message_thread_id = msg.message_thread_id
+    }
+
+    bot.sendChatAction(chatId, 'upload_photo');
+    bot.sendMediaGroup(chatId, mediaGroup, options);
+});
+
 bot.onText(/^\/solar_holes_(\d{4})(@\w+)?$/, async (msg, match) => {
     if (await doesBotNeedToIgnoreMessage(msg, true)) return;
 
