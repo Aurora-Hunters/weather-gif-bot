@@ -378,10 +378,7 @@ bot.onText(/^\/magnetometers?$/, async (msg, match) => {
 
     const chatId = msg.chat.id;
 
-    const mediaGroup = [{
-        type: 'photo',
-        media: `https://www.spaceweatherlive.com/images/magnetometers/mkstackplot.gif?${Date.now()}`
-    }];
+    let imageUrl = `https://flux.phys.uit.no/cgi-bin/mkstackplot.cgi?GifOnly&&comp=H&fin=&Sync=&?${Date.now()}`;
 
     const options = {};
     if (msg.is_topic_message) {
@@ -389,7 +386,7 @@ bot.onText(/^\/magnetometers?$/, async (msg, match) => {
     }
 
     bot.sendChatAction(chatId, 'upload_photo');
-    bot.sendMediaGroup(chatId, mediaGroup, options);
+    bot.sendPhoto(chatId, imageUrl, options);
 });
 
 bot.onText(/^\/solar_holes_(\d{4})(@\w+)?$/, async (msg, match) => {
