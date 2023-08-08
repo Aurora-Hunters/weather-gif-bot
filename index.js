@@ -740,7 +740,7 @@ const dataSources = [
         lat: 61,
         regexp: /((T|t)ampere)|((Т|т)ампере)/,
         data: [
-            'https://www.ursa.fi/yhd/tampereenursa/Pics/latest_CAM-20.jpg'
+            'https://www.ursa.fi/yhd/tampereenursa/ys-images/north-snapshot.jpg'
         ]
     },
     {
