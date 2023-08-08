@@ -765,15 +765,15 @@ const dataSources = [
     /**
      * Sweden
      */
-    {
-        name: 'Kiruna',
-        country: 'Sweden',
-        lat: 67,
-        regexp: /((K|k)iruna)|((К|к)ирун(a?))/,
-        data: [
-            'https://www.irf.se/alis/allsky/krn/latest_medium.jpeg'
-        ]
-    },
+    // {
+    //     name: 'Kiruna',
+    //     country: 'Sweden',
+    //     lat: 67,
+    //     regexp: /((K|k)iruna)|((К|к)ирун(a?))/,
+    //     data: [
+    //         'https://www.irf.se/alis/allsky/krn/latest_medium.jpeg'
+    //     ]
+    // },
     {
         name: 'Porjus',
         country: 'Sweden',
