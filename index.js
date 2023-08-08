@@ -786,6 +786,19 @@ const dataSources = [
         ]
     },
 
+    /**
+     * Russia
+     */
+    {
+        name: 'Nizino',
+        country: 'Russia',
+        lat: 59,
+        regexp: /(((N|n)izino)|(Н|н)изино))/,
+        data: [
+            'https://www.nizino-astro.ru/current.jpg',
+        ]
+    },
+
     // /**
     //  *
     //  */
