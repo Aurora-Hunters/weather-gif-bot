@@ -286,27 +286,27 @@ bot.onText(/((Р|р)укопись)|(^\/solar_map(@\w+)?$)/, async (msg, match) 
     bot.sendMediaGroup(chatId, mediaGroup, options);
 });
 
-bot.onText(/((Т|т)е(з|с)ис)/, async (msg, match) => {
-    if (await doesBotNeedToIgnoreMessage(msg)) return;
+// bot.onText(/((Т|т)е(з|с)ис)/, async (msg, match) => {
+//     if (await doesBotNeedToIgnoreMessage(msg)) return;
 
-    const chatId = msg.chat.id;
+//     const chatId = msg.chat.id;
 
-    let photo = `https://tesis.xras.ru/upload_test/files/fc.png?t=${Date.now()}`;
+//     let photo = `https://tesis.xras.ru/upload_test/files/fc.png?t=${Date.now()}`;
 
-    if (!SEND_WITHOUT_DOWNLOAD) {
-        photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
-    }
+//     if (!SEND_WITHOUT_DOWNLOAD) {
+//         photo = await downloadImage(photo, path.join(__dirname, 'temp', `${randomString()}.jpg`));
+//     }
 
-    const options = {};
-    if (msg.is_topic_message) {
-        options.message_thread_id = msg.message_thread_id
-    }
+//     const options = {};
+//     if (msg.is_topic_message) {
+//         options.message_thread_id = msg.message_thread_id
+//     }
 
-    bot.sendChatAction(chatId, 'upload_photo');
-    await bot.sendPhoto(chatId, photo, options);
+//     bot.sendChatAction(chatId, 'upload_photo');
+//     await bot.sendPhoto(chatId, photo, options);
 
-    if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
-});
+//     if (!SEND_WITHOUT_DOWNLOAD) { try { fs.unlinkSync(photo) } catch (e) {} }
+// });
 
 
 bot.onText(/^\/solar_holes(@\w+)?$/, async (msg, match) => {
