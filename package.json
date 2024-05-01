@@ -12,6 +12,7 @@
     "node-cron": "^2.0.3",
     "node-telegram-bot-api": "^0.30.0",
     "nodemon": "^2.0.6",
+    "posthog-node": "^4.0.1",
     "videoshow": "^0.1.12"
   }
 }
