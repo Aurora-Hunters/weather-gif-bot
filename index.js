@@ -131,7 +131,7 @@ bot.onText(/\/start/, async (msg, match) => {
   if (await doesBotNeedToIgnoreMessage(msg, true)) return;
 
   posthog.capture({
-    distinctId: "msg.chat.id",
+    distinctId: msg.chat.id,
     event: "command:start",
   });
 
@@ -258,7 +258,7 @@ bot.onText(/^\/space_weather(@\w+)?$/, async (msg, match) => {
   if (await doesBotNeedToIgnoreMessage(msg, true)) return;
 
   posthog.capture({
-    distinctId: "msg.chat.id",
+    distinctId: msg.chat.id,
     event: "command:space_weather",
   });
 
@@ -329,7 +329,7 @@ bot.onText(/\/graph_all/, async (msg, match) => {
   if (await doesBotNeedToIgnoreMessage(msg, true)) return;
 
   posthog.capture({
-    distinctId: "msg.chat.id",
+    distinctId: msg.chat.id,
     event: "command:graph_all",
   });
 
@@ -374,7 +374,7 @@ bot.onText(/^\/magnetometers?$/, async (msg, match) => {
   if (await doesBotNeedToIgnoreMessage(msg, true)) return;
 
   posthog.capture({
-    distinctId: "msg.chat.id",
+    distinctId: msg.chat.id,
     event: "command:magnetometers",
   });
 
@@ -905,7 +905,7 @@ bot.onText(/^\/webcam_all(@\w+)?$/, async (msg, match) => {
   if (await doesBotNeedToIgnoreMessage(msg, true)) return;
 
   posthog.capture({
-    distinctId: "msg.chat.id",
+    distinctId: msg.chat.id,
     event: "command:webcam_all",
   });
 
