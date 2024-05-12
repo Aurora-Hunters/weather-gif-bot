@@ -190,7 +190,11 @@ bot.onText(/(^\/cme_lollipop(@\w+)?$)|((Л|л)еденец)/, async (msg, match)
 
   const chatId = msg.chat.id;
 
-  let video = `https://iswa.gsfc.nasa.gov/IswaSystemWebApp/iSWACygnetStreamer?timestamp=2038-01-23+00%3A44%3A00&window=-1&cygnetId=261&t=${Date.now()}`;
+  let date =
+    new Date().toISOString().slice(0, 10) +
+    "+" +
+    new Date().toISOString().slice(11, 19);
+  let video = `https://iswa.gsfc.nasa.gov/IswaSystemWebApp/iSWACygnetStreamer?timestamp=${date}&window=-1&cygnetId=261&t=`;
 
   bot.sendChatAction(chatId, "upload_video");
 
