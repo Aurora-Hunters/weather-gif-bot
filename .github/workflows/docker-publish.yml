@@ -9,7 +9,7 @@ on:
     branches:
       - main
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 jobs:
   build-and-push:
@@ -38,7 +38,7 @@ jobs:
           provenance: false # Skip provenance to speed up
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache
-          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache,mode=max
+            ghcr.io/aurora-hunters/weather-gif-bot:latest
+            ghcr.io/aurora-hunters/weather-gif-bot:${{ github.sha }}
+          cache-from: type=registry,ref=ghcr.io/aurora-hunters/weather-gif-bot:buildcache
+          cache-to: type=registry,ref=ghcr.io/aurora-hunters/weather-gif-bot:buildcache,mode=max
