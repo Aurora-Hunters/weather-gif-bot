@@ -1,9 +1,16 @@
-FROM jrottenberg/ffmpeg:3.3-alpine AS ffmpeg
-FROM node:15
+FROM node:18-slim
 
-# copy ffmpeg bins from first image
-COPY --from=ffmpeg / /
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ffmpeg tzdata && \
+    rm -rf /var/lib/apt/lists/*
 
-# Set timezone
-RUN rm /etc/localtime
-RUN ln -s /usr/share/zoneinfo/Europe/Moscow /etc/localtime
+ENV TZ=Europe/Moscow
+
+WORKDIR /usr/src/app
+
+COPY package.json yarn.lock ./
+RUN yarn install --production --frozen-lockfile
+
+COPY . .
+
+CMD ["yarn", "start"]
